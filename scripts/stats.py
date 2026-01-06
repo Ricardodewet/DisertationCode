@@ -15,7 +15,7 @@ from typing import List
 
 import pandas as pd
 
-from ..src.evaluation.stats import (
+from src.evaluation.stats import (
     compute_descriptive_stats,
     run_comparisons,
     export_tables,
@@ -36,7 +36,7 @@ def main(args: List[str]) -> None:
     if os.path.isfile(metrics_path):
         df = pd.read_csv(metrics_path)
     else:
-        from ..src.evaluation.metrics import summarise_runs
+        from src.evaluation.metrics import summarise_runs
         df = summarise_runs(parsed.input)
     # Compute descriptive stats
     descriptive = compute_descriptive_stats(df, parsed.metrics)

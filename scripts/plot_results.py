@@ -12,8 +12,8 @@ import os
 import sys
 from typing import List
 
-from ..src.evaluation.metrics import extract_time_series, compute_difficulty_histograms
-from ..src.utils.plotting import (
+from src.evaluation.metrics import extract_time_series, compute_difficulty_histograms
+from src.utils.plotting import (
     plot_reward_curves,
     plot_metric_over_time,
     plot_difficulty_distribution,

@@ -14,10 +14,10 @@ from typing import Any, Dict, List
 
 import pandas as pd
 
-from ..src.utils.config import load_config
-from ..src.utils.seeding import set_seed
-from ..src.envs.learner_env import LearnerEnv
-from ..src.agents.baseline_policies import (
+from src.utils.config import load_config
+from src.utils.seeding import set_seed
+from src.envs.learner_env import LearnerEnv
+from src.agents.baseline_policies import (
     random_policy,
     static_medium_policy,
     heuristic_zpd_policy,

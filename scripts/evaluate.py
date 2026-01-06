@@ -13,7 +13,7 @@ import os
 import sys
 from typing import List
 
-from ..src.evaluation.metrics import summarise_runs
+from src.evaluation.metrics import summarise_runs
 
 
 def main(args: List[str]) -> None:

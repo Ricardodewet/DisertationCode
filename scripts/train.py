@@ -17,10 +17,10 @@ from typing import Any, Dict, List
 import numpy as np
 import pandas as pd
 
-from ..src.utils.config import load_config
-from ..src.utils.seeding import set_seed
-from ..src.envs.learner_env import LearnerEnv
-from ..src.agents.ppo_agent import PPOAgent
+from src.utils.config import load_config
+from src.utils.seeding import set_seed
+from src.envs.learner_env import LearnerEnv
+from src.agents.ppo_agent import PPOAgent
 
 
 def train_single_run(config: Dict[str, Any], seed: int, run_dir: str) -> None:
