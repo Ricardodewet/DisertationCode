@@ -1,0 +1,1147 @@
+\documentclass{book}
+\usepackage[utf8]{inputenc}
+\usepackage{geometry}
+\geometry{a4paper, margin=1in}
+\usepackage{graphicx} % For figures
+\usepackage{listings} % For code listings (if needed later)
+\usepackage{hyperref} % For hyperlinks
+\usepackage{natbib} % Add this for Harvard/author-year citations (required)
+\usepackage{tocloft} % For customizing TOC
+\usepackage{titlesec} % For section formatting
+\usepackage{longtable} % For long tables
+\usepackage{parskip}
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{enumitem}
+\usepackage{placeins}
+
+\bibliographystyle{agsm} % Set Harvard style here (agsm is a standard variant)
+
+\title{Using Reinforcement Learning to Optimize Assessment Question Difficulty for Enhanced Concept Learning}
+\author{Ricardo De Wet \\ Student ID: 577412}
+\date{December 2025}
+
+\begin{document}
+
+\frontmatter
+
+% Title Page
+\maketitle
+
+% Declaration of Originality
+\newpage
+\section*{Declaration of Originality}
+I, Ricardo De Wet (577412), declare that this thesis is my own original work and has not been submitted elsewhere for examination or award of a degree. Any assistance received (e.g., from ChatGPT for structure or Quillbot for paraphrasing) has been acknowledged.
+
+% Abstract
+\newpage
+\section*{Abstract}
+This thesis explores the application of Reinforcement Learning (RL) to dynamically adjust the difficulty of assessment questions in real-time. Traditional assessments fail to account for individual learner variability, which may hinder engagement and knowledge acquisition. By simulating a student learning environment, the study developed an RL agent that personalizes difficulty based on learner performance to promote concept mastery. The methodology involved creating a simulated classroom with variable question difficulties, modelling learner behaviour, and benchmarking RL performance against rule-based and static approaches. Outcomes included improved learning efficiency and personalized instructional strategies. This research contributes to adaptive learning technologies by integrating educational theory with machine learning design.
+
+This literature review explored the application of Reinforcement Learning (RL) in educational assessment, with a particular focus on Dynamic Difficulty Adjustment (DDA) for enhancing learner engagement and concept mastery. Grounded in educational psychology theories such as Flow Theory and the Zone of Proximal Development (ZPD), the review examined how RL algorithms, especially Proximal Policy Optimization (PPO), can be used to optimize question difficulty in real time, aligning instructional content with individual learner readiness. It critically evaluated current adaptive learning technologies and highlighted their limitations, particularly those relying on static or rule-based systems that fail to respond to evolving learner states. The review also surveyed recent RL-based implementations in educational contexts, identifying key methodological advances and ongoing challenges, including data demands, interpretability, and ethical considerations around privacy. A comprehensive gap analysis revealed a lack of targeted research on the integration of RL with pedagogical theory for real-time adaptive assessment. This review concluded by arguing for a novel research direction: the design of PPO-driven adaptive assessment systems that bridge theoretical foundations with algorithmic innovation to provide more effective, scalable, and personalized learning experiences.
+
+% Table of Contents
+\newpage
+\tableofcontents
+
+% List of Figures
+\newpage
+\listoffigures
+
+% List of Tables
+\newpage
+\listoftables
+
+% List of Abbreviations
+\newpage
+\section*{List of Abbreviations}
+\begin{itemize}
+    \item PPO: Proximal Policy Optimization
+    \item DDA: Dynamic Difficulty Adjustment
+    \item RL: Reinforcement Learning
+    \item ZPD: Zone of Proximal Development
+    \item MDP: Markov Decision Process
+    \item POMDP: Partially Observable Markov Decision Process
+    % Add more as needed from documents
+\end{itemize}
+
+\mainmatter
+
+\chapter{Introduction}
+% Background and Context
+\section{Background and Context}
+Exams and tests play a crucial role in our educational systems, both to measure knowledge and reinforce learning. Traditional assessments often adopt a static structure in which all students face the same set of questions with fixed levels of difficulty. This fixed approach does not account for the diverse learning needs, prior knowledge, or varying pace of different students. When questions are too easy, they may fail to stimulate intellectual growth; when they are too hard, they can cause frustration and disengagement.
+
+In response to this issue, adaptive learning systems have been introduced to create more personalized educational experiences. Many of these systems rely on predefined rule-based logic to adapt content. Such approaches are often limited in their ability to openly respond to changes in learner performance. Reinforcement Learning (RL) is a machine learning model in which agents learn optimal strategies through feedback and interaction with their environment; they can be a promising alternative.
+
+This research aimed to explore how RL can be applied to dynamically adjust the difficulty of assessment questions in real-time by customizing the assessments to each student's current ability. The goal was to create an optimal challenge level that allows for deeper learning and improves engagement. This approach has the potential to transform assessment from a passive evaluation tool into an active component of the learning process.
+
+% Research Problem Statement
+\section{Research Problem Statement}
+A major limitation of conventional assessments is that they do not adapt to the evolving knowledge states of learners. Static question difficulty does not reflect the individual performance or learning progression of a student, resulting in assessments that may not effectively support student development. This contradiction can lead to ineffective measurement of understanding, reduced motivation, and hindered concept mastery.
+
+Problem Statement: How can reinforcement learning be utilized to dynamically adjust assessment question difficulty in real-time to optimize student concept learning and knowledge growth?
+
+(Drawn from Literature Review:) The research problem centered on the limitations of static or rule-based adaptive systems, which fail to dynamically align instructional content with individual learner states, leading to suboptimal engagement and mastery.
+
+% Research Questions and Objectives
+\section{Research Questions and Objectives}
+\subsection{Research Questions}
+\begin{enumerate}
+\item How can Proximal Policy Optimization (PPO) be integrated with pedagogical theories like Flow Theory and Zone of Proximal Development (ZPD) to create a Dynamic Difficulty Adjustment (DDA) system for adaptive educational assessments?
+\item To what extent does a PPO-driven DDA system improve learner mastery and engagement compared to rule-based or static difficulty models in simulated environments?
+\end{enumerate}
+
+\subsection{Research Objectives}
+
+\begin{enumerate}
+    \item Design and Simulate the System: Develop and test a PPO-driven DDA system in a simulated environment, grounded in Flow Theory and ZPD, to optimize question difficulty for personalized learning.
+    \item Evaluate Efficacy: Assess the system's performance using metrics like reward convergence, concept mastery, and ZPD alignment, ensuring statistical significance (e.g., via t-tests and ANOVA).
+    \item Compare to Baselines: Benchmark PPO against heuristic/rule-based models for scalability, efficiency, and ethical viability, addressing gaps in RL-pedagogy integration.
+    \item Ensure Reproducibility and Ethics: Mitigate biases, validate through multiple runs (n=50), and provide a pathway for future real-world applications.
+\end{enumerate}
+
+\section{Significance of the Study}
+The integration of reinforcement learning into educational assessments represents a significant step forward in the personalization of learning. By dynamically aligning the difficulty of questions to the learner’s current knowledge state, the proposed system aims to sustain optimal cognitive engagement. This personalized approach is anticipated to support deeper conceptual understanding and promote learner motivation by maintaining an appropriate level of challenge.
+
+The findings of this research will contribute to the field of intelligent educational systems by demonstrating the applicability of RL for adaptive assessment design. Beyond improving learning outcomes, this study also has broader implications for the design of scalable and educational technologies capable of personalizing learning at scale.
+
+\section{Scope and Limitations}
+The scope focused on simulation-based evaluation of RL for DDA in educational assessments, primarily using PPO. Limitations include reliance on simulated data (no real learners), potential lack of generalizability to diverse real-world contexts, and computational constraints in training RL models.
+
+\section{Thesis Overview}
+This thesis is structured as follows: 
+\begin{itemize}
+    \item Chapter 2 reviews the literature
+    \item Chapter 3 details the methodology
+    \item Chapter 4 describes system design and implementation
+    \item Chapter 5 presents results
+    \item Chapter 6 discusses findings
+    \item Chapter 7 concludes
+\end{itemize}
+    
+
+\chapter{Literature Review}
+% Integrated from Literature Review PDF and Proposal's Lit Review section
+\section{Abstract}
+This literature review explores the application of Reinforcement Learning (RL) in educational assessment, with a particular focus on Dynamic Difficulty Adjustment (DDA) for enhancing learner engagement and concept mastery. Grounded in educational psychology theories such as Flow Theory and the Zone of Proximal Development (ZPD), the review examines how RL algorithms, especially Proximal Policy Optimization (PPO), can be used to optimize question difficulty in real time, aligning instructional content with individual learner readiness. It critically evaluates current adaptive learning technologies and highlights their limitations, particularly those relying on static or rule-based systems that fail to respond to evolving learner states. The review also surveys recent RL-based implementations in educational contexts, identifying key methodological advances and ongoing challenges, including data demands, interpretability, and ethical considerations around privacy. A comprehensive gap analysis reveals a lack of targeted research on the integration of RL with pedagogical theory for real-time adaptive assessment. This review concludes by arguing for a novel research direction: the design of PPO-driven adaptive assessment systems that bridge theoretical foundations with algorithmic innovation to provide more effective, scalable, and personalized learning experiences.
+
+\section{Introduction}
+In the evolving landscape of education, the demand for personalized learning experiences continues to intensify. As digital platforms increasingly mediate teaching and assessment, the limitations of static and standardized testing methodologies become more pronounced. Traditional assessments, though efficient in certain contexts, fail to adapt to the nuanced learning trajectories of individual students. This rigidity can lead to disengagement, anxiety, and inaccurate representations of student ability. In contrast, adaptive assessments, tools that dynamically adjust their content based on student responses, offer the potential to transform the assessment process by tailoring difficulty levels in real-time.
+
+Among various computational approaches, Reinforcement Learning (RL) has emerged as a promising technique for implementing Dynamic Difficulty Adjustment (DDA) in educational assessments. RL, rooted in behavioural psychology and decision theory, enables systems to learn optimal strategies through interaction with an environment. This literature review explores the theoretical foundations, current implementations, and future directions of RL in adaptive assessment, with a particular emphasis on Proximal Policy Optimization (PPO) and its application to personalized question sequencing.
+
+\section{Scope}
+This literature review examines: 
+
+\begin{itemize}
+    \item Theoretical frameworks (Flow Theory, ZPD, MDP/POMDP) underpinning adaptive learning.
+    \item Traditional and contemporary adaptive learning technologies
+    \item Approaches to DDA in education, with a focus on rule-based vs. RL-based models
+    \item RL techniques for educational adaptation, particularly PPO
+    \item Critical analysis of empirical studies and methodological trends
+    \item Ethical, technical, and practical considerations for real-world deployment
+\end{itemize}
+
+\section{Research Problem}
+While adaptive learning platforms have gained prominence, many continue to rely on static, heuristic-based models that lack responsiveness to longitudinal changes in learner proficiency. Existing systems like Computerized Adaptive Testing (CAT) typically employ Item Response Theory (IRT) or similar statistical methods, which assume unidimensionality and lack dynamic feedback mechanisms. These limitations hinder their effectiveness in environments where student ability evolves rapidly due to instruction or practice. 
+
+Recent research points to RL as a potential solution, capable of personalizing assessments at scale by learning from each student’s interaction history. However, RL applications in this domain remain limited, often underdeveloped in terms of theory integration, empirical
+
+validation, and algorithmic sophistication. This review addresses these gaps by synthesizing current findings, identifying methodological shortcomings, and proposing a research agenda that leverages PPO in simulation-based adaptive assessment.
+
+\section{Theoretical Foundations}
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.6\textwidth]{images/theoretical_foundations.png} % Replace with your file name
+\caption{Theoretical Foundations of the Reinforcement Learning System}
+\label{fig:theoretical_foundation}
+\end{figure}
+
+\vspace{2\baselineskip}
+
+An effective adaptive assessment system must be grounded in a solid theoretical understanding of learning processes and decision-making under uncertainty. This section explores three interrelated frameworks that form the conceptual backbone of Reinforcement Learning (RL) in education: Flow Theory, Zone of Proximal Development (ZPD), and the Markov Decision Process (MDP)/Partially Observable MDP (POMDP) models. Together, these frameworks provide a dual lens, one psychological, the other computational, for designing intelligent, responsive educational systems that can personalize learning experiences in real-time.
+
+\subsection{Flow Theory}
+Flow Theory, first proposed by Mihaly \cite{csikszentmihalyi1990}, refers to a state of deep, enjoyable immersion in an activity, where the individual becomes fully engaged and loses awareness of time or external distractions. This state emerges when the perceived difficulty of a task is well matched to an individual's skill level. Tasks that are too easy result in boredom, while those that are too challenging produce anxiety or cognitive overload. The "flow channel", the optimal zone between these two extremes, is where the most productive learning takes place.
+
+In the context of education, Flow Theory is especially important because it highlights the need for constant calibration of task difficulty to sustain motivation and focus. This concept is directly operable in adaptive assessments through RL systems. These systems can be trained to dynamically modulate question difficulty dynamically by interpreting behavioural indicators, such as response accuracy, time on task, hesitation patterns, and even biometric feedback, as proxies for flow state. The goal is to design agents that keep learners within their personal flow zone, thus maximizing engagement and long-term knowledge retention.
+
+RL facilitates this by rewarding the agent for maintaining the learner performance within an optimal range. For example, reward functions can be penalized for both too-high and too-low difficulty levels, guiding the agent to gradually converge on a personalized trajectory of challenge. Several studies have attempted to quantify and simulate flow states in educational contexts \cite{liu2021,siddig2025}. These studies support the idea that approximate flow states can be embedded into adaptive systems using performance metrics and affective cues.
+
+However, one major challenge in applying Flow Theory computationally lies in its subjective 
+nature. Flow is highly individualized and context-dependent. What constitutes an engaging 
+challenge for one learner may be overwhelming for another. This variability complicates the 
+design of generalized models and requires highly flexible student-centered reward 
+structures. Moreover, cultural, motivational and even temporal (e.g. fatigue) variables 
+influence flow require systems to adapt across multiple dimensions.
+
+\subsection{Zone of Proximal Development (ZPD)}
+
+Recent research has expanded Lev Vygotsky’s foundational theory of the Zone of Proximal Development (ZPD) into modern adaptive and AI-driven learning contexts. Studies such as \citep{yousif2025, cai2025, vainas2019} illustrate how intelligent tutoring and reinforcement learning systems operationalize ZPD principles to deliver dynamic scaffolding, maintaining tasks within the learner’s optimal challenge zone.
+
+ZPD is defined as the difference between what a learner can accomplish independently and what they can achieve with support or scaffolding. Instructional activities that target this zone are neither too easy (within current capabilities) nor too difficult (beyond reach even with assistance). Rather, they challenge the learner just enough to promote growth, assuming appropriate feedback or guidance is provided.
+
+In adaptive assessment systems, ZPD translated into the design of dynamic difficulty trajectories. Here, the RL agent’s task is to learn a policy that presents questions slightly above the learner’s current mastery, thus promoting development without inducing failure. The strength of RL in this context is its ability to learn these optimal “scaffolding strategies” over time, adapting the support level based on learner response patterns.
+
+Incorporating ZPD into RL algorithms requires modelling the learner’s proficiency not as a static attribute but as a fluid state that evolves through interaction. This aligns with the use of state-estimation models, such as Bayesian Knowledge Tracing or latent skill encoding, in the agent’s observation space. When combined with policy-learning strategies (e.g. PPO), the system can be trained to reward actions that keep the learner within their ZPD across time.
+
+Empirical research supports this integration. \cite{vanlehn2011} demonstrated that intelligent tutoring systems (ITS) designed with ZPD aligned scaffolding strategies significantly outperformed systems that merely tracked correctness. \cite{woolf2020} extended this work by integrating ZPD awareness into hint systems, dynamically modifying the type and timing of assistance. Embedding such insights into RL agents enhances both instructional efficacy and learner satisfaction.
+
+Despite its strengths, ZPD also introduces complexity. Unlike Flow Theory, which focuses on affective alignment, ZPD emphasizes cognitive readiness and progression. Balancing both frameworks within an RL system means simultaneously managing emotional engagement and cognitive challenge, which may occasionally conflict. Designing multi-objective reward functions that can accommodate both constructs remains an open challenge in adaptive learning research.
+
+\subsection{Markov Decision Processes (MDPs) and POMDPs}
+From a computational standpoint, the behaviour of RL agents in educational settings is typically formalized using Markov Decision Processes (MDPs). An MDP is defined by a tuple (S, A, P, R, $\gamma$), where: 
+
+\begin{itemize}
+    \item $S$ is the set of states (e.g. the learner's knowledge state),
+    \item $A$ is the set of possible actions (e.g. selecting the next question or difficulty level),
+    \item $P$ is the state transition probability function,
+    \item $R$ is the reward function, and
+    \item $\gamma$ is the discount factor that determines the weight of future rewards.
+\end{itemize}
+
+In educational applications, the “state” is often a latent variable inferred from learner responses. Since these internal states (e.g. cognitive load, concept mastery, engagement) are rarely fully observable, it is more realistic to model them as Partially Observable Markov Decision Processes (POMDPs). A POMDP generalises the MDP by introducing an observation space that provides indirect signals (e.g. correctness, response time) from which the agent must infer the true underlying state.
+
+POMDPs are particularly useful in education because they allow agents to make decisions under uncertainty, just as human instructors do. Instead of relying on explicit knowledge of the student’s understanding, the agent forms a belief state, a probabilistic estimation of what the student knows, and selects actions that maximize expected cumulative reward given that belief.
+
+Research by \cite{rafferty2016} and \cite{mandel2014} illustrates the power of POMDPs in tutoring systems. For instance, POMDP-based quiz generators have been shown to outperform deterministic sequencing approaches in both efficiency and learner satisfaction. They achieve this by effectively managing uncertainty, personalizing content, and adapting pacing in real-time.
+
+Moreover, POMDPs enable RL systems to incorporate longer-term objectives, such as mastery learning or retention, into their policies, rather than focusing solely on short-term correctness. This aligns with educational priorities that emphasize durable knowledge over test performance.
+
+Despite their advantages, POMDPs are computationally intensive, especially in large state spaces or when multiple variables are tracked. Designing scalable, real-time educational systems based on POMDPs remains a technical challenge. However, recent advances in neural approximations, deep belief modelling, and scalable policy learning (e.g. PPO) are beginning to bridge this gap.
+
+\section{Reinforcement Learning Fundamentals in Education}
+Reinforcement Learning (RL) is a paradigm within machine learning that focuses on training agents to make sequences of decisions through interaction with an environment. At its core, RL is driven by the principle of learning through evaluative feedback: agents receive rewards or penalties based on the outcomes of their actions and use this feedback to refine their decision-making policies over time. In educational contexts, RL provides a compelling framework for modelling personalised instruction, curriculum sequencing, and dynamic difficulty adjustment (DDA), naturally aligning with the iterative and adaptive nature of human learning.
+
+\subsection{Core Components of RL in Educational Systems}
+The RL framework is typically defined by five interrelated components, each of which maps intuitively to key elements in a teaching-learning scenario: 
+
+\begin{itemize}
+    \item \textbf{State (S):} Represents the current context or status of the learner. In education, this could encompass observable data such as recent test performance, engagement levels, or estimated mastery of concepts. In more sophisticated models, latent variables, like motivation, attention span, or fatigue, can be inferred and encoded as part of the state.
+
+    \item \textbf{Action (A):} Denotes the choices available to the agent at a given state. For adaptive learning systems, actions could involve selecting the next question, adjusting the difficulty level, offering a hint, or providing a motivational nudge. The granularity of the action space critically influences the system's responsiveness and pedagogical effectiveness.
+
+    \item \textbf{Reward (R):} Provides feedback to the agent about the value of its actions. In educational RL, rewards are often based on learner success metrics such as answer correctness, response time, or knowledge gain. Importantly, these rewards can be designed to capture both short-term outcomes (e.g. getting a question right) and long-term learning objectives (e.g. concept retention).
+
+    \item \textbf{Policy ($\pi$):} The agent’s strategy, mapping observed states to actions. The goal of training is to find an optimal policy that maximizes the cumulative expected reward across learning sessions.
+\end{itemize}
+
+Value Function (V) and/or Q-Function (Q): These estimate the future rewards an agent can expect from a given state (V) or state-action pair (Q). These functions help the agent to evaluate the quality of decisions beyond immediate rewards, an essential feature for modelling educational growth. 
+
+This formulation aligns closely with the Markov Decision Process (MDP) framework discussed in the previous section. However, in real-world learning environments where not all learner attributes are directly observable, the problem is often more accurately modelled as a Partially Observable MDP (POMDP), where the agent must infer hidden learner states through indirect feedback mechanisms.
+
+\subsection{Reinforcement Learning versus Other Machine Learning Paradigms}
+Understanding how RL compares to other machine learning approaches clarifies its suitability for education: 
+
+\begin{list}{}{\leftmargin=2em}
+\item Supervised learning relies on large, labelled datasets where correct outputs are known. This is ideal for tasks like image classification or language translation, but impractical in dynamic educational contexts where the “correct” instructional decision is not predefined and must evolve based on learner interaction. 
+
+\item Unsupervised learning detects patterns or clusters in unlabelled data, which is useful for knowledge discovery or learner segmentation but does not involve decision making. 
+
+\item Reinforcement learning, by contrast, learns from the consequences of sequential decisions and is designed to adapt policies based on interaction feedback. This makes it uniquely suited for educational applications where the goal is to iteratively improve learner outcomes through tailored intervention strategies. 
+\end{list}
+
+In educational settings, RL’s advantage lies in its ability to personalise the learning experience in real-time, optimizing for long-term learning outcomes rather than immediate correctness. Moreover, RL can operate effectively in noisy, partially observable, and evolving environments, characteristics that are typical in classrooms or e-learning platforms.
+
+\subsection{RL Algorithms Commonly Used in Education}
+A variety of RL algorithms have been explored in educational research, each with distinct trade-off’s. Below is a conceptual overview of the most relevant ones: 
+
+\textbf{Q-Learning:}
+
+A value-based method that estimates the Q-value (expected future rewards) of each action in a given state. While simple and interpretable, Q-Learning scales poorly with large or continuous state spaces and assumes a discrete action environment. This limits its effectiveness in complex, real-world educational scenarios. 
+
+\textbf{Deep Q-Networks (DQN):}
+
+DQN extends Q-Learning by using deep neural networks to approximate Q-values. This allows it to manage high-dimensional inputs (e.g. time-series student data or multiple knowledge components). DQN has been evaluated in intelligent tutoring systems, though it remains sensitive to hyper parameters and lacks robustness in stochastic or non-stationary settings, common characteristics of real student interactions.
+
+\textbf{Policy Gradient (PG) Methods:}
+
+Rather than estimating value functions, PG methods optimize the policy directly. These methods are especially suited for environments with continuous or high-dimensional action spaces, such as selecting among multiple teaching strategies or generating open-ended hints. However, they tend to suffer from high variance in learning and slower convergence. 
+
+\textbf{Actor-Critic Methods:}
+
+These combine PG and value-based approaches by using two components: an actor, which proposes actions, and a critic, which evaluates them. Actor-Critic methods offer improved stability and sample efficiency, making them a compelling option for real-time educational applications. Still, their training remains sensitive to model design and reward structure. 
+
+\textbf{Proximal Policy Optimization (PPO):}
+
+PPO, a type of Actor-Critic method, was developed to balance stability and exploration in complex environments. It introduces a clipped objective that restricts drastic changes in the policy during updates. PPO has proven effective in noisy, uncertain domains and is thus increasingly used in simulation-based education research. Its robustness, scalability, and reduced hyper parameter sensitivity make it a preferred choice for adaptive assessment systems and multi-agent educational simulations. 
+
+Recent studies \cite{castagna2025,lee2022} demonstrate that PPO-based agents outperform rule-based or static models in adjusting question difficulty, maintaining engagement, and promoting learning efficiency across diverse learner types.
+
+\subsection{Challenges in Educational RL System Design}
+Designing an RL-based adaptive system for education involves several conceptual and practical considerations: 
+\begin{itemize}{}{\leftmargin=2em}
+\item \textbf{State Representation:} The way the learner state is encoded significantly affects performance. State variables may include prior knowledge, task history, emotional states, time-on-task, and contextual information. In advanced implementations, these can be derived from probabilistic models like Bayesian Knowledge Tracing or inferred using neural embeddings. 
+
+\item \textbf{Reward Design:} Crafting an effective reward function is the most challenging task. Rewards must align with pedagogical goals, correctness alone may not be sufficient. Some designs incorporate delayed rewards (e.g. improvement in post-test scores), affective signals (e.g. frustration inferred from behaviour), or future-oriented metrics (e.g. retention or transfer of knowledge). 
+
+\item \textbf{Exploration-Exploitation Balance:} While exploration is crucial for discovering new instructional strategies, it can risk learner disengagement if it results in poorly chosen tasks. Techniques like $\epsilon$-greedy policies, entropy regularization, or safety constraints can help balance this trade-off.
+
+\item \textbf{Temporal Dependencies and Feedback Loops:} Educational outcomes unfold over time, and actions may have delayed effects. RL excels at modelling such dynamics, but long episode lengths and sparse rewards can make training inefficient without simulated environments. 
+\end{itemize}
+
+\subsection{Simulation and Real-World Deployment}
+Most educational reinforcement learning (RL) systems are initially assessed in simulated learning environments, where "virtual learners" behave according to cognitive models or empirically-derived learning curves, such as logistic growth. These environments allow for controlled experimentation with multiple agent configurations, rapid prototyping and parameter tuning, and comparative evaluations against baselines like fixed or rule-based systems. Metrics commonly used in simulations include cumulative learning gain, question efficiency (e.g., minimum items to proficiency), and engagement proxies (e.g., simulated 
+drop-out rates). 
+
+However, real-world deployment adds several layers of complexity. Data privacy and ethics are paramount; systems interacting with human learners must comply with regulations such as GDPR or FERPA, requiring anonymized, secure data handling. Furthermore, educator oversight is crucial. RL agents must be transparent and allow for teacher intervention, as black-box systems without being explained undermine trust and usability. Finally, system integration is a significant challenge, as embedding RL agents into Learning Management Systems (LMS) or Intelligent Tutoring Systems (ITS) requires compatibility with existing infrastructure and content standards.
+
+\subsection{Limitations and Open Challenges}
+Despite its promise, reinforcement learning (RL) in education faces several persistent challenges. One significant hurdle is the cold start problem, where the absence or scarcity of learner data makes it difficult for agents to make informed decisions, particularly for inexperienced users or in niche content domains. Another challenge is reward sparsity and credit assignment, as educational success often emerges only after numerous interactions, complicating the attribution of positive or negative outcomes to specific actions. Generalization also remains a key obstacle; policies learned in one domain or with a particular student population may not transfer readily to others, thereby limiting the scalability of RL solutions. Finally, substantial ethical implications must be carefully addressed. RL systems in education need to be meticulously designed to prevent the reinforcement of existing biases, avoid over-challenging disadvantaged learners, and ensure that the optimization of engagement does not compromise the fundamental quality of learning.
+
+\section{Adaptive Learning Technologies}
+The application of Reinforcement Learning (RL) in education has gained significant traction over the past decade, driven by the need for adaptive systems that respond to individual learner needs in real-time. Unlike traditional educational technologies that rely on static rule sets or statistical profiling, RL-based systems are capable of dynamically optimizing instructional strategies through experience and feedback. In this section, we explore key domains where RL has been applied in educational contexts, analyse the methodologies adopted, highlight empirical findings, and reflect on the current limitations and future opportunities of RL in this field.
+
+\subsection{Application Domains of RL in Education}
+Reinforcement Learning has been employed across various educational domains, each leveraging the framework’s strengths in sequential decision-making, personalization, and long-term optimization. Major application areas include: 
+
+\textbf{Curriculum Sequencing and Topic Recommendation:} 
+
+RL systems have been used to determine the optimal order in which concepts or topics should be presented to a learner. This is critical in scaffolding learning experiences and building cumulative knowledge. Rather than relying on pre-defined learning paths, RL agents dynamically adjust sequencing based on learner performance. For example, \cite{chi2022} employed a multi-armed bandit framework to recommend topics in a mathematics tutoring environment. The system adjusted content based on individual mastery patterns, leading to measurable improvements in learning efficiency. 
+
+\textbf{Personalized Feedback and Hint Generation:} 
+
+Feedback timing and quality are key to effective learning. RL-based systems have been developed to learn when and how to provide hints, explanations, or prompts. These agents optimize feedback provision by predicting whether a learner is likely to benefit from support at a given moment. \cite{li2020} demonstrated that RL-driven hint timing reduced learner frustration and increased persistence in language learning tasks. Unlike fixed or random feedback, RL enables just-in-time assistance calibrated to learner engagement and error history. 
+
+\textbf{Adaptive Assessments: }
+
+RL has shown strong potential in adaptive testing scenarios. By modelling question selection as a sequential decision-making problem, RL agents can estimate learner proficiency more accurately and efficiently than traditional methods such as Computerized Adaptive Testing (CAT). \cite{mandel2014} and \cite{lee2022} applied RL, specifically, POMDP and PPO-based agents, to generate adaptive quizzes that adjust question difficulty on the fly. These systems not only improved assessment precision but also maintained learner engagement by avoiding demotivating extremes of task difficulty.
+
+\textbf{Game-Based Learning and Motivation Regulation: }
+
+In gamified educational settings, RL agents have been used to modulate gameplay elements, such as task difficulty, reward frequency, or pacing, to sustain intrinsic motivation. This approach parallels Dynamic Difficulty Adjustment (DDA) used in digital games. \cite{mohamed2020} applied RL to tune challenge levels in educational games, which increased time-on-task and lowered cognitive overload. These findings suggest that RL can balance motivational and cognitive demands in complex learning environments. 
+
+\textbf{Multi-Agent Classroom Environments: }
+
+Beyond individual personalization, RL has been used in group learning scenarios where multiple agents (students, tutors, or content modules) interact. In these systems, coordination policies must be learned to ensure that group dynamics, such as peer interactions or collaborative pacing, do not hinder learning. \cite{castagna2025} explored multi-agent PPO frameworks in classroom simulations, achieving improved cooperation and task completion rates in collaborative problem-solving tasks.
+
+\subsection{Methodological Approaches}
+The methodologies employed in RL-education research span both simulation-based and real-world studies, each with its own strengths and constraints. 
+
+\textbf{Simulation-Based Studies:} 
+
+Many studies in this domain leverage simulated learners, which are often modelled using probabilistic or cognitive architectures, such as Bayesian Knowledge Tracing or Performance Factor Analysis. These models are instrumental in generating synthetic response data under precisely controlled parameters. The use of simulations offers several key advantages: it permits large-scale experimentation without the ethical complexities inherent in human trials, facilitates rapid iteration on agent designs and reward formulations, and allows for fine-grained manipulation of learner traits, including prior knowledge and engagement profiles. For instance, \cite{castagna2025} utilized a simulation environment where agents practised multi-skill tasks with varying reward schedules. In this particular set-up, simulated learners followed learning curves that were derived from empirical cognitive data, enabling a realistic yet scalable 
+evaluation of different instructional strategies. 
+
+\textbf{Real-World Deployments:} 
+
+Although fewer in number, real-world deployments provide crucial validation. \cite{nguyen2023} implemented an RL-based assessment tool in a high school mathematics curriculum. Learners using the adaptive system demonstrated significant gains in concept mastery and expressed higher satisfaction compared to peers using fixed-sequence materials. These findings affirm RL’s practical relevance but also underscore implementation barriers, including the need for teacher training, ethical oversight, and system transparency.
+
+\textbf{Evaluation Metrics: }
+
+Across both simulation and real-world studies, several metrics are commonly used to evaluate RL systems: 
+
+\begin{list}{}{\leftmargin=2em}
+\item \textbf{Cumulative Learning Gain:} Improvement in learner proficiency over time. 
+
+\item \textbf{Instructional Efficiency:} Number of interactions or questions required to reach a learning goal. 
+
+\item \textbf{Engagement Metrics:} Proxies include dropout rates, task completion times, or clickstream data. 
+
+\item \textbf{User Satisfaction:} Measured through surveys or qualitative feedback. 
+
+\item \textbf{Policy Interpretability:} How clearly educators and stakeholders can understand the RL policy. 
+\end{list}
+
+\cite{siddig2025} emphasizes the absence of standardized benchmarks in educational RL, a gap that limits the ability to compare results across studies and hinders the replication of successful models.
+
+\subsection{Synthesis of Key Findings}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{p{3.5cm} p{3cm} p{3cm} p{4.5cm}}
+\hline
+\textbf{Study} & \textbf{RL Method} & \textbf{Domain} & \textbf{Key Outcome} \\
+\hline
+\cite{mandel2014} & POMDP & Adaptive Assessment & Increased assessment precision and learner engagement \\
+
+\cite{chi2022} & Bandit & Curriculum Sequencing & Improved knowledge retention through dynamic content ordering \\
+
+\cite{lee2022} & PPO & Assessment & Maintained learner flow state and reduced anxiety \\
+
+\cite{li2020} & Actor--Critic & Feedback Timing & Enhanced hint timing and increased student persistence \\
+
+\cite{mohamed2020} & DQN & Game-Based Learning & Increased time-on-task and reduced cognitive overload \\
+
+\cite{nguyen2023} & Custom PPO & Real-world Assessment & Higher learner retention and satisfaction \\
+\hline
+\end{tabular}
+\caption{Applications of Reinforcement Learning in Adaptive Educational Systems}
+\label{tab:rl_education}
+\end{table}
+
+These studies collectively demonstrate that reinforcement learning (RL) can significantly enhance learning experiences. This enhancement is achieved through several mechanisms, including increasing the precision of adaptive assessments, improving learning efficiency via intelligent sequencing, and enhancing the quality and timing of feedback. Furthermore, RL has shown promise in boosting engagement and motivation, particularly within game-based or other interactive learning contexts. However, despite these promising results, a substantial portion of this work remains fragmented and exploratory. Consequently, more systematic validation is necessary to establish best practices, optimize the transfer of learned policies, and develop more generalizable frameworks for the application of RL in education.
+
+\subsection{Limitations and Gaps}
+A review of current reinforcement learning (RL) applications in education reveals several critical gaps. Primarily, there is a simulation dominance, with many systems relying on synthetic learners, which inherently limits their ecological validity when applied to real-world scenarios. Another significant issue is the short-term focus of evaluations, as RL agents are often assessed over brief interaction episodes, making it challenging to ascertain their impact on long-term learning retention or knowledge transfer. Furthermore, there is limited cross-domain generalization, with most models being narrowly trained on specific subjects or age groups, thereby hindering their scalability across diverse educational contexts. Equity blind spots are also evident, as few studies adequately explore how RL policies might differentially 
+affect learners across various socio-economic backgrounds or cognitive diversity lines. 
+Finally, transparency and interpret ability remain persistent barriers, with black-box policies 
+impeding teacher trust and, consequently, classroom adoption. 
+
+Moreover, there is a notable scarcity of research on combining RL with human-in-the-loop strategies. This approach, where teachers and systems engage in a continuous process of co-adaptation based on ongoing interaction, is crucial. Such a hybrid model is essential for effectively aligning AI recommendations with expert pedagogical judgement and vital ethical considerations in educational settings.
+
+\subsection{Future Directions}
+To advance the field, several directions merit deeper exploration: 
+
+\begin{list}{}{\leftmargin=2em}
+\item \textbf{Hybrid Models:} Combining RL with supervised learning or rule-based systems to guide early training (especially for cold start problems). 
+
+\item \textbf{Longitudinal Studies:} Measuring the impact of RL-guided instruction on retention, transfer, and motivation over semesters or academic years. 
+
+\item \textbf{Equity-Aware Reward Functions:} Designing policies that adaptively support underperforming learners without stigmatizing or over-simplifying their experience. 
+
+\item \textbf{Explainable RL:} Developing interpretable decision trees, attention maps, or saliency visualizations to expose agent reasoning to educators. 
+
+\item \textbf{Teacher-AI Collaboration Models:} Embedding RL agents into teacher-support tools that suggest, not enforce, adaptive actions, enabling shared control.
+\end{list}
+
+\section{Dynamic Difficulty Adjustment (DDA)}
+Dynamic Difficulty Adjustment (DDA) is a technique used to continuously calibrate the challenge level of tasks or assessments in response to user performance. Originally developed in the field of game design to maintain player engagement \cite{hunicke2005}, DDA has since been embraced in educational systems for its ability to sustain optimal learning conditions. In the context of adaptive learning, DDA seeks to keep learners in a productive learning zone, avoiding boredom from easy content and frustration from overly difficult tasks. When integrated with reinforcement learning (RL), DDA evolves into a powerful mechanism for delivering personalized, real-time instructional trajectories.
+
+\subsection{Theoretical and Pedagogical Foundations}
+The principles underlying DDA align with several foundational theories in learning science: 
+
+\begin{list}{}{\leftmargin=2em}
+    
+\item \textbf{Flow Theory \cite{csikszentmihalyi1990}:} Posits that learners experience the highest engagement and learning outcomes when task difficulty matches their current skill level. DDA systems operationalize this by adapting questions to maintain the learner within this “flow channel.” 
+
+\item \textbf{Zone of Proximal Development (ZPD; Vygotsky, 1978):} Suggests learning occurs most effectively when tasks are just beyond a learner’s current ability, requiring minimal scaffolding. DDA systems use performance signals to target this zone, adjusting difficulty to stretch a learner’s capacity without overwhelming them. 
+
+\item \textbf{Constructivist Learning Theory:} Emphasizes that learners construct knowledge best through progressively challenging experiences. DDA facilitates this progression by constantly adjusting content to the learner’s evolving competence. 
+\end{list}
+
+By embodying these principles, DDA provides the backbone for instructional adaptivity in RL-based systems, serving as the primary mechanism through which question difficulty is modulated in response to real-time learner feedback.
+
+\subsection{Rule-Based DDA Systems}
+Historically, most educational Dynamic Difficulty Adjustment (DDA) systems have relied on rule-based models, where the progression of difficulty is governed by fixed heuristics. These methods include staircase methods, where difficulty increases following correct responses and decreases after incorrect ones, threshold triggers, which, for instance, prompt a jump in difficulty after three consecutive correct answers; and heuristic matrices, which map learner profiles (such as prior knowledge, speed, and accuracy) to discrete difficulty levels. 
+
+While these rule-based approaches are straightforward and interpretable, they suffer from several limitations. Their rigidity means that rules are static and do not evolve based on longitudinal learning patterns. They also risk overfitting to short-term behaviour, potentially misinterpreting transient performance, such as a lucky guess, as evidence of mastery. Furthermore, these methods often offer limited personalization, typically applying uniform thresholds across all users and thereby ignoring inherent learner heterogeneity. Despite their simplicity, rule-based DDA systems have been successfully implemented in early adaptive learning platforms like SmartBook and LearnSmart, which utilize performance thresholds to guide question selection. However, a notable drawback is their frequent failure to optimize for long-term learning outcomes or to consider deeper engagement dynamics.
+
+\subsection{RL-Based DDA: A Paradigm Shift}
+The integration of reinforcement learning (RL) into Dynamic Difficulty Adjustment (DDA) systems represents a significant advancement in instructional adaptivity. Rather than relying on static rules, RL-based DDA agents learn optimal difficulty adjustment strategies through repeated interactions with learners or simulated learners. The agent’s objective is to maximize cumulative educational rewards, such as knowledge acquisition, engagement, or retention, by selecting difficulty levels that align with evolving learner states. In RL-based DDA, the state includes features such as learner proficiency, error trends, response time, engagement markers, and historical trajectories. The action is the selection of a difficulty level for the next item. The reward reflects learning gain, optimal challenge indicators, or affective measures like frustration avoidance. The policy determines how the system balances short-term feedback with long-term mastery goals. A notable advantage of RL is its capacity for delayed credit assignment, allowing it to learn from long-term outcomes rather than only immediate responses. This is particularly useful in education, where the effects of an instructional decision may only manifest after several tasks or sessions. Studies such as \cite{mandel2014} and \cite{lee2022} have shown that RL-based DDA agents outperform rule-based counterparts in maintaining learner engagement, improving assessment efficiency, and supporting deeper learning. The use of Proximal Policy Optimization (PPO), in particular, has been effective in stabilizing policy learning in noisy, partially observable educational environments.
+
+\subsection{Modelling Learning Curves with RL}
+One of the most compelling advantages of Reinforcement Learning (RL)-based Dynamic Difficulty Adjustment (DDA) is its ability to incorporate cognitive models of learning directly into its reward function. Rather than treating each interaction as an isolated event, RL agents can model learner improvement using established learning curves. These include Logistic Growth Curves, which capture the progression of learners from novice to expert; the Power Law of Practice, which models the decrease in error rates with repetition; and Spaced Repetition Models, which predict optimal timings for revisiting content to maximize retention. By encoding such models, the RL agent is rewarded not merely for immediate correctness, but for actions that actively accelerate long-term mastery. This mechanism inherently encourages the selection of question sequences that effectively scaffold learning in a pedagogically meaningful manner. For example, an RL agent might receive higher rewards when a learner correctly answers a tricky question following a period of scaffolding, signifying genuine concept acquisition. Conversely, it might be penalized for prematurely escalating difficulty, which could lead to learner disengagement or repeated failure. This form of model-aware reinforcement learning, while still in its infancy, holds substantial promise for the creation of intelligent systems capable of approximating the nuanced decision-making processes of expert educators.
+
+\subsection{Methodological Comparison}
+While rule-based systems are easier to implement and explain, they cannot match the nuance, adaptability, and intelligence of RL-based DDA systems. However, the higher computational and data demands of RL require careful system design and robust simulations before deployment.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{p{4cm} p{4.5cm} p{4.5cm}}
+\hline
+\textbf{Feature} & \textbf{Rule-Based DDA} & \textbf{RL-Based DDA} \\
+\hline
+Adaptivity & Limited, based on fixed logic & High, learned from ongoing interaction \\
+
+Scalability & Easy to deploy with minimal overhead & Requires training, tuning, and computational resources \\
+
+Personalization & Basic and coarse-grained & Extensive and learner-specific \\
+
+Flexibility & Low, rule changes require manual redesign & High, policy adapts dynamically \\
+
+Interpretability & High, rules are explicit & Medium to low, policy behaviour may be opaque \\
+
+Long-term Modelling & Absent & Integrated through cumulative reward formulation \\
+
+Response to Uncertainty & Poor handling of noisy or partial data & Robust via POMDP or PPO-based formulations \\
+
+Data Requirements & Low & High \\
+\hline
+\end{tabular}
+\caption{Comparison Between Rule-Based and RL-Based Dynamic Difficulty Adjustment}
+\label{tab:dda_comparison}
+\end{table}
+
+\subsection{Real-World Use Cases}
+Recent Reinforcement Learning (RL)-based Dynamic Difficulty Adjustment (DDA) implementations clearly illustrate its growing utility. For instance, \cite{mandel2014} demonstrated a POMDP agent capable of real-time quiz difficulty adjustment, which led to more efficient assessments. Similarly, \cite{mohamed2020} displayed RLenhanced difficulty tuning in educational games, resulting in increased learner time-on-task. More recently, \cite{lee2022} developed a PPO-based agent that effectively maintained learners within flow-optimal difficulty zones, outperforming traditional Computerized Adaptive Testing (CAT) in engagement metrics. While these systems leverage different architectural approaches, such as POMDP, DQN, and PPO, they all share the fundamental goal of sustaining learner progress by continuously optimizing the cognitive challenge level.
+
+\subsection{Challenges and Ethical Considerations}
+Despite their considerable promise, Reinforcement Learning (RL)-based Dynamic Difficulty Adjustment (DDA) systems confront several significant challenges. A primary issue is reward sparsity and delays, as meaningful educational rewards, such as end-of-term performance, often materialize long after the relevant instructional actions, complicating the process of policy learning. Another inherent challenge is exploration risk, where agents must necessarily explore suboptimal strategies to effectively learn, potentially exposing students to less effective instruction during this exploratory phase. Furthermore, these systems exhibit data intensity, requiring substantial amounts of high-quality interaction data for effective training, which raises concerns about data access and equity. Fairness and bias are also critical considerations, as RL agents may inadvertently over-challenge or under-challenge specific demographics if they are not trained on sufficiently diverse data. Finally, transparency and trust remain significant hurdles, given that the "black-box" nature of some RL policies can impede educators' ability to understand or trust the system's decisions. These challenges collectively underscore the need for hybrid models, which combine RL's adaptive capabilities with rule-based constraints or explainable models, thereby ensuring pedagogical safety, accountability, and inclusiveness in educational applications.
+
+\subsection{Future Directions for DDA Research}
+To mature the use of Reinforcement Learning (RL)-based Dynamic Difficulty Adjustment (DDA) in education, several research avenues should be prioritized. These include developing safe exploration techniques that leverage risk-aware policies to constrain agent behaviour during early training, thereby minimizing potential negative impacts on learners. Research should also focus on multi-objective rewards, aiming to balance short-term performance with crucial long-term outcomes such as retention, engagement, and emotional well-being. Furthermore, explainable RL is essential, involving the creation of systems that can justify their decisions using human-interpretable rules or visualizations, fostering greater trust and adoption among educators. Human-in-the-loop systems are another critical area, allowing teachers to actively guide or override agent decisions in real time, integrating pedagogical expertise with algorithmic recommendations. Finally, efforts in cross-domain transfer are necessary to train DDA policies that can generalize effectively across various subjects, languages, and diverse learner profiles, enhancing scalability and applicability. RLpowered DDA systems signify a fundamental shift from static adaptivity to learning adaptivity, resulting in systems that can evolve, personalize, and truly reflect the inherent complexity of human learning.
+
+\section{Reinforcement Learning in Education}
+Reinforcement Learning (RL) is emerging as one of the most promising frameworks for personalizing instruction and assessment in educational contexts. It offers a mechanism to dynamically adapt content delivery, feedback, pacing, and task selection based on learner interactions and performance trajectories. By continuously optimizing for long-term learning outcomes, RL systems have the potential to mimic the decision-making of expert human tutors, at scale. This section surveys the current landscape of RL applications in education, analyses representative studies, and evaluates methodological strengths and limitations, culminating in a synthesis of findings that motivate the proposed research.
+
+\subsection{Overview of RL Applications in Education}
+Educational environments involve sequential, context-sensitive decision-making, a natural match for RL. The core idea is to treat the learning process as a decision problem where instructional choices (actions) lead to changes in learner state (knowledge, motivation, engagement), and the system receives feedback (rewards) based on observed outcomes. 
+
+RL has been applied across the following key educational domains: 
+
+\begin{list}{}{\leftmargin=2em}
+\item \textbf{Adaptive Tutoring Systems: }
+
+In intelligent tutoring systems (ITS), RL agents determine which concepts, exercises, or scaffolding techniques to present next. Systems like RLATES and Cordillera personalize instructional pathways using feedback from student performance, with the goal of maximizing retention and engagement over time. 
+
+\item \textbf{Curriculum Sequencing: }
+
+Rather than following a fixed sequence of topics, RL-based curriculum planners dynamically reorder content to optimize learning gains. \cite{chi2022} used a bandit-based RL agent to adapt topic selection in mathematics instruction, resulting in increased learner efficiency and retention. 
+
+\item \textbf{Personalized Feedback and Hint Timing: }
+
+RL agents also determine when and how to deliver feedback. For example, \cite{li2020} developed a hint generation system that used an Actor-Critic model to regulate hint timing in language learning tasks. Learners received targeted support only when it was likely to improve persistence and reduce errors. 
+
+\item \textbf{Adaptive Assessment Systems: }
+
+RL plays a critical role in generating assessments that adjust in real time to learner ability. Unlike traditional Computerized Adaptive Testing (CAT) that relies on fixed statistical models (e.g. IRT), RL systems learn from ongoing interaction. PPO-based agents, such as those developed by \cite{lee2022}, adjust question difficulty dynamically to maintain engagement and accurately estimate proficiency.
+
+\item \textbf{Educational Games and Motivation Management: }
+
+Game-based learning environments benefit from RL-driven difficulty modulation, reward structuring, and pace adjustment. \cite{mohamed2020} implemented RLbased DDA in educational games, enhancing user engagement and learning persistence. 
+
+\item \textbf{Multi-Agent Classrooms: }
+
+In classroom simulations or collaborative settings, RL agents have been used to manage interactions among multiple learners. \cite{castagna2025} employed multi-agent PPO agents in a simulated classroom, optimizing group-level strategies for engagement and collaboration.
+\end{list}
+
+\subsection{Methodological Approaches in RL-Education Research}
+RL research in education spans both controlled simulations and real-world implementations. Each method offers unique strengths and trade-off's: 
+
+\begin{list}{}{\leftmargin=2em}
+\item \textbf{Simulation-Based Studies:}
+
+These studies model learners using probabilistic or cognitive rules (e.g. logistic growth, Bayesian Knowledge Tracing). Synthetic data allows: 
+\begin{itemize}
+    \item Fine control over learner variability 
+    \item Large-scale experimentation 
+    \item Iterative refinement of agent policies 
+\end{itemize}
+
+Simulations also reduce ethical and logistical barriers, making them ideal for early-stage prototyping. However, their lack of ecological validity limits their predictive power in educational settings. 
+
+\item \textbf{Real-World Deployments:}
+
+Few but impactful studies have deployed RL systems with actual learners. \cite{nguyen2023} implemented an RL-powered assessment agent in a secondary school mathematics curriculum. Compared to rule-based systems, the RL approach improved learner retention and reduced assessment anxiety, highlighting the value of adaptivity in high-stakes educational settings. 
+
+\item \textbf{Evaluation Metrics:}
+
+Across studies, evaluation of these systems is typically based on one or more of the following dimensions: Cumulative Learning Gain, which measures the difference in learner proficiency before and after an intervention; Instructional Efficiency, assessed by the reduction in items or sessions required to achieve mastery; Engagement Indicators, including metrics such as task completion rates, time-on-task, and dropout probability; Satisfaction and Acceptance, often gauged through learner surveys and qualitative feedback; and Policy Stability and Generalizability, measured by performance across diverse learner types and subject areas. \cite{siddig2025} highlights a critical issue in RL-for-education research: the lack of standardized benchmarks. This absence of unified evaluation frameworks significantly impedes cross-study comparisons and restricts the generalizability of findings.
+\end{list}
+
+\subsection{Summary of Representative Studies}
+These studies highlight RL’s potential to improve instructional decision-making, learner outcomes, and engagement. Each algorithm, whether value-based (Q-learning), policy-based (PPO), or hybrid (Actor-Critic), was chosen to suit specific pedagogical goals and environmental constraints.
+
+\begin{table}[h]
+\centering
+\begin{tabular}{p{3.5cm} p{3cm} p{3.5cm} p{4.5cm}}
+\hline
+\textbf{Study} & \textbf{RL Method} & \textbf{Application Domain} & \textbf{Key Outcomes} \\
+\hline
+\cite{mandel2014} & POMDP & Adaptive Assessment & Increased accuracy and assessment efficiency \\
+
+\cite{chi2022} & Bandit & Curriculum Sequencing & Improved mathematical performance and content mastery \\
+
+\cite{lee2022} & PPO & Assessment & Maintained learner flow state and reduced anxiety \\
+
+\cite{li2020} & Actor--Critic & Hint Timing & Improved learner persistence and reduced error rates \\
+
+\cite{mohamed2020} & DQN & Educational Games & Increased engagement and improved cognitive balance \\
+
+\cite{nguyen2023} & Custom PPO & Real-world Assessment & Higher learner retention and overall satisfaction \\
+\hline
+\end{tabular}
+\caption{Empirical Studies Applying Reinforcement Learning in Educational Contexts}
+\label{tab:rl_empirical_studies}
+\end{table}
+
+\subsection{Methodological and Practical Limitations}
+Despite promising results, the application of Reinforcement Learning (RL) in education is still nascent and faces several key limitations. There is an overreliance on simulations, with many models validated only on synthetic learners, which risks misalignment with real-world behaviours. Another challenge stems from sparse and delayed rewards, as learning gains often manifest long after instructional actions, complicating both reward design and credit assignment. The cold start problem is also prominent, meaning RL systems require extensive interaction history to make effective decisions, which can lead to suboptimal early guidance for new learners. Furthermore, there is limited cross-domain generalizability, as most systems are trained on specific domains (e.g., algebra, grammar), making their transfer across diverse subjects or age groups difficult. Concerns also arise regarding algorithmic bias and equity gaps; without careful data curation, RL systems may inadvertently disadvantage lowperforming or underrepresented learners. Finally, transparency and trust remain significant hurdles, as many educators and learners perceive RL agents as "black boxes," thereby limiting their adoption in classrooms where interpretability and human oversight are essential. Additionally, most RL implementations in education focus heavily on performance optimization, often overlooking softer but increasingly recognized essential outcomes for holistic learning, such as curiosity, creativity, or metacognition.
+
+\subsection{Toward Human-Centric Educational RL}
+To address these challenges and fully realize Reinforcement Learning (RL)'s potential in education, future research should prioritize several key directions. One crucial area is developing Explainable and Trustworthy AI. This means RL agents ought to provide clear rationales for their decisions, through interpretable policy structures, informative visualizations, or intuitive teacher-facing dashboards. 
+
+Another vital direction is Equity-Aware Policy Design. Reward functions should explicitly account for the diverse needs of learners, aiming to minimize performance gaps and prevent overfitting to dominant learner profiles. Beyond this, fostering Teacher-AI Co-Design Models is essential. Instead of aiming to replace educators, RL agents should be designed as collaborative partners, allowing humans to modify, constrain, or even override policies when necessary. 
+
+Research also needs to focus on Longitudinal and Lifelong Learning Models. The goal here is to move beyond mere short-term test scores and instead optimize for long-term retention, deep conceptual understanding, and the development of learner autonomy over extended periods. Finally, developing Multi-Objective Reward Systems is critical. These systems should balance cognitive goals, such as concept mastery, with affective and behavioural objectives like preserving motivation and avoiding frustration. 
+
+Ultimately, adopting such human-centred frameworks will make RL systems more pedagogically aligned, ethically sound, and deployable in real classroom environments.
+
+\section{Identified Gaps and Justification for Current Study}
+The application of Reinforcement Learning (RL) in education has shown tremendous promise, particularly in areas such as adaptive assessment, curriculum sequencing, and feedback optimization. However, despite these advancements, a critical review of the literature reveals that current RL implementations are far from mature or universally applicable. Several recurring gaps in methodology, design, and theoretical integration constrain the broader deployment and effectiveness of RL-based educational systems. This section synthesizes these limitations and provides a structured rationale for the proposed research project: the development and evaluation of a Proximal Policy Optimization (PPO)based Dynamic Difficulty Adjustment (DDA) agent for simulated adaptive assessments.
+
+\subsection{Key Gaps in the Literature}
+\textbf{Limited Integration of Educational Psychology Theories into RL Systems}
+
+Many existing RL-based systems are grounded in technical optimization rather than educational theory. While algorithms may adjust difficulty levels or feedback timing based on performance, few models explicitly embed psychological constructs such as Flow Theory or Zone of Proximal Development (ZPD). This results in systems that may be computationally efficient but pedagogically misaligned. The absence of these theories undermines learner motivation, fails to address affective states, and limits instructional quality. 
+
+\textbf{Underutilization of PPO in Educational Contexts}
+
+Among RL algorithms, Proximal Policy Optimization (PPO) stands out for its stability, sample efficiency, and robustness in stochastic and high-variance environments. These features are highly desirable in educational settings, where learner behaviour is dynamic, noisy, and difficult to predict. Despite its advantages and growing popularity in robotics and game AI, PPO remains underexplored in education, with most studies defaulting to simpler algorithms like Q-Learning or DQNs or relying on bandit models that lack temporal reasoning. 
+
+\textbf{Overdependence on Rule-Based and Statistical Models in Adaptive Assessments }
+
+Many adaptive assessment platforms still rely on Item Response Theory (IRT) or rule-based heuristics. While statistically sound, these models assume static learner traits, fail to account for evolving proficiency, and offer limited personalization. Their fixed logic cannot adapt to complex, non-linear learning trajectories, nor can they incorporate engagement data, affective responses, or longitudinal trends. RL, especially when combined with simulation-based environments, offers a more flexible and responsive alternative. 
+
+\textbf{Simulation-Only Validation with Weak Generalization Guarantees}
+
+Although simulation-based RL studies are valuable for prototyping, many are evaluated solely on artificial learners modelled with idealized learning curves. These models often oversimplify real-world variability by ignoring factors such as cognitive fatigue, motivational fluctuations, or domain-specific misconceptions. As a result, agent policies optimized in simulation frequently lack ecological validity and perform poorly when translated into actual learning environments. 
+
+\textbf{Inadequate modelling of Learning Curves in RL Rewards}
+
+Most RL-based educational systems use immediate correctness or engagement metrics as proxies for learning success. Few integrate cognitive learning models (e.g. exponential forgetting curves, spaced repetition, or transfer functions) directly into the reward function. This omission results in systems that may reward short-term success (e.g. right answers) without optimizing for deeper understanding or long-term retention. 
+
+\textbf{Lack of Benchmarking and Evaluation Standards}
+
+There is a notable absence of shared benchmarks, datasets, or standardized performance metrics in the educational RL literature. As \cite{siddig2025} and others have noted, this fragmentation makes it difficult to compare results across studies, replicate successful models, or measure progress over time. It also contributes to the lack of reproducibility, one of the major criticisms of AI applications in education more broadly. 
+
+\textbf{Limited Consideration of Equity, Transparency, and Ethical Design}
+
+RL-based adaptivity systems risk reinforcing existing educational inequalities if fairness and bias mitigation are not explicitly addressed. For example, if agents learn from biased training data or are rewarded for maximizing efficiency alone, they may systematically disadvantage underperforming or marginalized learners. Moreover, the black-box nature of RL policies can limit interpretability, which is essential for adoption in educational institutions.
+
+\subsection{Justification for the Current Study}
+The proposed research project aims to directly address these identified gaps through a structured and theoretically grounded exploration of RL for adaptive assessments. Specifically, it focuses on developing a PPO-based DDA agent in a simulated classroom environment. The justification rests on the following interlocking rationales: 
+
+\textbf{Theoretical Alignment with Flow Theory and ZPD}
+
+Unlike traditional assessments or reward-maximizing RL systems, Flow Theory and Zone of Proximal Development (ZPD) will explicitly inform the proposed PPO agent. The reward function will be shaped to penalize both under-challenge (boredom) and over-challenge (frustration), thereby sustaining cognitive engagement. Task difficulty will be calibrated to target a learner’s "proximal" zone, where support is needed but growth is maximized. 
+
+\textbf{Deployment of PPO as a Stabilized, Scalable RL Model for Assessment}
+
+By using PPO, this study introduces a more stable and sample-efficient algorithm to the field of educational AI. PPO’s clipped objective function helps prevent catastrophic policy updates and ensures smoother learning in high-noise, high-variance environments, typical of learner modelling. Its ability to scale across diverse tasks and domains supports future generalization and transfer. 
+
+\textbf{Grounding in Simulation with Pedagogical Fidelity}
+
+While the initial implementation will use synthetic learners, these will be modelled on cognitively plausible learning curves informed by learning science literature. This includes probabilistic correct-answer modelling, skill growth over time, and noise parameters for slip and guess behaviours (e.g. IRT-based). As such, the simulation will provide a realistically noisy testbed for refining agent behaviour prior to human deployment. 
+
+\textbf{Comparative Evaluation Against Static and Heuristic Baselines}
+
+To validate the effectiveness of the PPO agent, it will be benchmarked against two standard alternatives: a Static Difficulty Model, which presents same-level questions throughout the session, and a Rule-Based Adaptive Model, where difficulty adjusts after a fixed number of correct or incorrect responses. These comparisons are designed to assess whether Reinforcement Learning (RL)-based adaptivity provides measurable gains in learning, efficiency, and engagement when compared to common models currently in use. 
+
+\textbf{Ethical and Practical Design for Future Deployment}
+
+Although the study is simulation-based, the architecture will be designed with ethical foresight. This includes the potential for \textit{human-in-the-loop control}, allowing for human oversight and intervention. Additionally, it will feature \textit{optional interpretability modules}, such as reward explanation graphs, to provide insights into the system's decision-making process. A \textit{clear separation between instructional strategy and student data layers} will also be maintained to support privacy-by-design principles. These deliberate decisions ensure that the proposed system is not only algorithmically advanced but also deployment-ready and aligned with the ethical responsibilities inherent in educational technology.
+
+\subsection{Research Contribution}
+The proposed study aims to advance the field in several key areas. Firstly, it seeks to contribute to Algorithmic Innovation by demonstrating Proximal Policy Optimization (PPO) as a viable and superior alternative to existing Dynamic Difficulty Adjustment (DDA) mechanisms in adaptive testing. Secondly, it provides Theoretical Grounding by embedding principles from educational psychology directly into Reinforcement Learning (RL) design, specifically by shaping reward functions with cognitive and motivational principles. Thirdly, the study emphasizes Methodological Rigor, offering a reproducible evaluation framework that encompasses simulation fidelity, robust benchmarking, and rigorous statistical validation. Fourthly, it addresses Ethical Responsibility by initiating fairness-aware, explainable, and privacy-conscious design practices within educational RL systems. Finally, it targets Practical Utility by creating a blueprint for the deployment of such systems in real-world adaptive learning platforms. By directly addressing current limitations in scope, theory, and methodology, this study holds the potential to bridge the gap between computational efficiency and educational value, thereby helping RL become a more trusted and effective tool in the future of personalized learning.
+
+\section{Ethical Considerations in Adaptive Educational Systems}
+As reinforcement learning (RL) and other intelligent technologies become more embedded in education, ethical concerns must be treated as foundational rather than peripheral. Adaptive systems, particularly those driven by opaque or autonomous decision-making mechanisms, are not value-neutral. They actively shape learner experiences, influence performance outcomes, and can, intentionally or unintentionally, perpetuate bias, inequity, or disempowerment. This section explores the core ethical issues surrounding RL-based adaptive assessment systems and outlines design principles intended to safeguard learner well-being, equity, and trust.
+
+\subsection{Fairness and Bias Mitigation}
+One of the most critical concerns in educational AI is algorithmic fairness. If a Reinforcement Learning (RL)-based assessment agent is trained on biased data—for example, datasets that overrepresent high-performing learners or particular socioeconomic groups—it may learn policies that perform well on average but fail to adequately accommodate disadvantaged populations. In extreme cases, such systems have the potential to reinforce existing inequalities by over-challenging low-performing students, which can lead to increased cognitive overload and discouragement. Conversely, they might under-challenge highperforming students, resulting in stagnation or boredom. Furthermore, these systems could inadvertently tailor strategies in ways that privilege certain cultural, linguistic, or cognitive styles.
+
+To address these concerns, the proposed study incorporates fairness-aware evaluation criteria. For instance, simulated learners will be stratified by proficiency and response variability to ensure that the RL agent performs equitably across diverse profiles. In future real-world implementations, fairness audits could be integrated to flag disparate outcomes, while reward functions can be explicitly designed to value improvement and engagement across all learner groups, rather than solely focusing on absolute performance.
+
+\subsection{Transparency and Interpretability}
+Reinforcement learning (RL) agents, particularly those based on deep policy networks like Proximal Policy Optimization (PPO), are frequently criticized for their "black-box" nature. In an educational context, this opacity presents a significant problem. Teachers, administrators, students, and parents require an understanding of how decisions are made, whether it pertains to the selection of a specific question, an increase in difficulty, or the methodology used to measure success.
+
+To foster essential trust, such systems must support explainability at multiple levels. This includes learner-facing explanations, which might convey messages like, "This question was chosen to help you build on your recent success in medium-level tasks." It also encompasses teacher-facing dashboards that summarize policy trends and highlight potential concerns. Furthermore, developer-level visualizations, such as reward trajectory plots and policy stability graphs, are crucial for auditing and debugging the system. While achieving full interpretability in deep RL remains an ongoing research challenge, this project takes a significant step toward transparency by meticulously logging agent decisions and simulating justification outputs, thereby establishing a foundational basis for future explainable-RL modules.
+
+\subsection{Autonomy and Informed Consent}
+Educational technologies should aim to augment, rather than replace, human agency, a principle that applies equally to both learners and educators. If students remain unaware of how their progress is being tracked or influenced, or if they perceive an invisible system as manipulative, the learning experience can become disempowering. Similarly, educators may understandably resist systems that override their pedagogical intent or operate beyond their control.
+
+To promote autonomy for all users, several key safeguards are crucial. These include providing opt-in mechanisms and clear disclosures about system functionality, ensuring transparency from the outset. Systems should be designed to recommend rather than enforce instructional decisions, giving learners and educators the final say. Critically, teachers must be empowered to override or modify agent behaviour when needed, allowing them to integrate their professional judgment. Furthermore, incorporating learner preferences into state representations or as secondary reward criteria (e.g., preferred pacing or content format) can enhance personalization and a sense of ownership. These deliberate design choices are essential for creating an adaptive system that learners perceive as a supportive partner rather than a stern examiner, and that educators view as a valuable tool rather than a threat.
+
+\subsection{Data Privacy and Security}
+\textbf{Reinforcement Learning (RL)} systems necessitate substantial amounts of learner interaction data to function effectively, encompassing performance metrics, response times, behavioural patterns, and potentially even biometric or emotional indicators. This extensive data collection inherently creates significant privacy concerns, particularly when the data involves minors or is stored across third-party platforms.
+
+To address these critical concerns, the proposed framework will incorporate privacy-bydesign principles. This includes data anonymization and pseudonymization by default, ensuring that personal identities are protected from the outset. Additionally, secure data encryption at rest and in transit will be implemented to safeguard information during storage and transfer. Role-based access control will be utilized to restrict sensitive information only to authorized personnel, further enhancing data security. Finally, a modular system design will allow for local (on-device) training or inference where technically feasible, reducing the need for data transfer to central servers. In any future human deployment, all data collection must comply with relevant regional legal frameworks, such as GDPR (EU) or POPIA (South Africa), and robust informed consent procedures must be diligently implemented to ensure ethical data handling.
+
+\subsection{Accountability and Human Oversight}
+While Reinforcement Learning (RL) agents are powerful decision-makers, they should not operate unchecked. Accountability mechanisms are essential to ensure that any instructional errors, biases, or system failures can be identified and addressed effectively. Crucially, human educators must remain the ultimate arbiters of pedagogy and assessment.
+
+To support this necessary oversight, the system should meticulously log and timestamp every decision made by the agent, along with its internal state and the corresponding reward signal. This detailed record allows educators to review decision histories, flag problematic behaviour, and adjust system settings as needed. Furthermore, a "human-in-the-loop" design is prioritized, enabling teachers to intervene in the learning process at any time, including pausing the system, altering difficulty parameters, or even disabling automation entirely.
+
+These practices are designed to foster co-agency, where both the human and the AI system contribute to the learner’s progress in an accountable and complementary fashion. By incorporating these principles from the design phase onward, this research ensures that the adaptive system is not only technically capable and pedagogically sound but also socially responsible and ethically deployable. As AI continues to influence the classroom, such foresight is not optional; it is absolutely essential.
+
+\section{Visual Framework and Conceptual Model}
+To integrate the psychological, algorithmic, and instructional design principles discussed throughout this review, we present a conceptual model of a Proximal Policy Optimization (PPO)-driven Dynamic Difficulty Adjustment (DDA) agent for adaptive assessment. This model embodies a modular, interpretable system architecture that maps real-time learner behaviour to personalized assessment strategies, grounded in reinforcement learning.
+
+The system is designed to operate within a simulation-based educational environment but is extensible to real-world deployment. It supports both experimentation and eventual integration with learning platforms or intelligent tutoring systems.
+
+\subsection{Conceptual Flow of the PPO-Based DDA System}
+
+\vspace{\baselineskip}
+
+\begin{figure}[htbp]
+\centering
+\includegraphics[width=0.4\textwidth]{images/ppo_flow_diagram.png}
+\caption{Conceptual Flow of the PPO-Based DDA System}
+\label{fig:ppo_flow}
+\end{figure}
+
+\vspace{2\baselineskip}
+
+\textbf{Learner Profile and Interaction History}
+
+This layer is responsible for capturing the learner's real-time and historical data. The inputs to this layer may include various metrics such as proficiency estimates (e.g., inferred skill levels), response time trends, error rates across different difficulty levels, and engagement markers (e.g., indicators of dropout risk). Additionally, session metadata, such as the number of questions attempted or a proxy for fatigue, can be incorporated. In a real-world deployment scenario, this module could be further augmented with demographic data, prior academic performance records, or even learner preferences (e.g., preferred pacing style or content format), provided that such additions strictly adhere to relevant ethical constraints and privacy regulations. 
+
+\textbf{State Encoder} 
+
+The state encoder transforms raw learner data into a structured input vector for the RL agent. It may include both hand crafted features and learned embeddings. The state vector represents a latent representation of the learner's current cognitive and affective state. 
+
+This component also enables partial observability modelling, aligning with the Partially Observable Markov Decision Process (POMDP) framework. The true learner state (e.g. motivation, understanding) is inferred from observed data streams. 
+
+\textbf{PPO Agent}
+
+At the heart of the model is a Proximal Policy Optimization (PPO) agent. The architecture of this PPO agent primarily includes two key components: a Policy Network and a Value Network. The Policy Network is responsible for outputting probabilities for choosing each available question difficulty level, which serves as the action in this context. Concurrently, the Value Network estimates the expected cumulative reward from the current state, providing a crucial baseline for evaluating actions. The policy itself is updated after each episode using PPO's distinctive clipped surrogate objective. This mechanism is vital for ensuring stable learning by preventing overly aggressive policy shifts, thereby maintaining a balance between effective exploration and stable optimization. 
+
+\textbf{Action Selection: Difficulty Level}
+
+Based on the current learner state, the Proximal Policy Optimization (PPO) agent selects one of three discrete difficulty levels for the next assessment item. These levels are categorized as: "Easy," intended for consolidation or a motivational boost; "Medium," representing a comfortable zone for the learner; and "Hard," designed to provide a stretch challenge. While the current action space is limited to these three difficulty levels, it holds the potential for future expansion to include additional instructional decisions such as content domain selection, offering scaffolding options, or even timing hints. 
+
+\textbf{Learner Response}
+
+Once the question is presented, the system meticulously collects the learner’s response and associated meta data. This includes whether the answer was correct, the time taken to respond, the number of attempts made, and various behavioural indicators such as hesitation or rapid guessing. This comprehensive information is then fed into the reward function, which uses these inputs to calculate feedback for the agent. Simultaneously, this data helps to refine the agent’s belief about the learner’s evolving state, allowing the system to update its understanding of the learner's proficiency and current cognitive context for subsequent decision-making. 
+
+\textbf{Reward Function}
+
+The reward signal is carefully designed to integrate both cognitive and motivational considerations. A positive reward of +1 is granted for a correct response when the question is at an appropriate challenge level, specifically aligning with the learner's Zone of Proximal Development (ZPD). Conversely, a penalty of $- 1$ is applied for repeated failure that is attributed to excessive difficulty, aiming to prevent learner frustration. Additionally, a bonus of +0.5 is provided for successful transitions from one difficulty band to another, acknowledging sustained progress. Further bonus or penalty modifiers are incorporated based on engagement proxies, such as a decreasing time-on-task or quick dropouts, to reflect the learner's motivational state. The overarching goal of this reward structure is to train the agent to maintain learners within the flow zone, thereby optimizing for long-term engagement and deep concept mastery, rather than solely focusing on immediate correctness. 
+
+\textbf{PPO Policy Update Loop}
+
+At the end of each simulated episode (or a fixed number of interactions), the PPO agent updates its policy using gradient ascent on the clipped objective function. This loop continues over many episodes, with the policy improving over time through simulated or real learner interactions.
+
+\subsection{Modularity and Future Extensibility}
+The system is designed with modularity in mind, a crucial characteristic that allows each component to be extended or replaced independently. This flexibility offers significant advantages; for example, the reward function can be reweighted or even made adaptive through techniques like curriculum learning. Similarly, the action space can be expanded in future iterations to include more nuanced instructional decisions, such as offering scaffolding strategies, varying hint types, or adjusting the learning modality (e.g., visual, audio, or text). Furthermore, the state encoder, responsible for interpreting learner data, can be upgraded with advanced architectures like transformers, LSTMs, or attention mechanisms to enhance temporal modelling of learner behaviour. This inherent modularity not only supports rigorous experimentation but also facilitates future real-world integration into existing Learning Management Systems (LMS) or Intelligent Tutoring Systems (ITS).
+
+\subsection{Conceptual Model Objectives}
+The overarching goals of this system are multifaceted, aiming for Personalization by tailoring the challenge level in real-time based on learner response patterns and inferred states. It also strives for high Engagement, maintaining learner motivation by carefully avoiding conditions of either under- or over-challenging. Furthermore, the system prioritizes Efficiency, seeking to reduce the number of questions needed to reliably estimate learner proficiency. To ensure broad applicability, Scalability is a key objective, with the model design supporting expansion to multiple domains and learner types. Finally, Explainability and Ethics are paramount, requiring the system to maintain transparency, fairness, and control at each decision point. This conceptual model forms the core engine of the proposed research experiment, directly guiding the simulation, agent training, selection of evaluation metrics, and subsequent analysis. It represents a synthesis of established learning theory, advanced Reinforcement Learning methodology, and proactive ethical design, thereby aligning with the broader vision of data-driven, student-centred education.
+
+\section{Conclusion}
+This literature review has explored the intersection of educational theory, machine learning, and adaptive assessment, with a particular focus on the use of Reinforcement Learning (RL) to implement Dynamic Difficulty Adjustment (DDA) systems. As the demand for personalized and scalable learning experiences continues to rise, RL offers a powerful, datadriven approach to tailoring assessments in real time. However, as the review has demonstrated, current applications remain limited in both theoretical grounding and practical sophistication. 
+
+The review began by laying a strong theoretical foundation, examining how Flow Theory and the Zone of Proximal Development (ZPD) can inform intelligent assessment strategies. These psychological models emphasize the importance of maintaining an optimal challenge zone, tasks must be neither too difficult nor too easy. When embedded into RL frameworks, these theories provide meaningful pedagogical direction for designing reward functions and shaping learner state representations. 
+
+At the algorithmic level, the review outlined how Markov Decision Processes (MDPs) and their partially observable counterparts (POMDPs) provide the mathematical backbone for sequential decision-making in uncertain educational environments. Here, the agent’s goal is not simply to maximize correctness, but to optimize cumulative learning outcomes over time. This conceptual shift, from static scoring to dynamic adaptation, underpins the promise of RL in personalized education. 
+
+The review then delved into the core mechanics of RL, distinguishing it from supervised and unsupervised learning. Key components such as state, action, reward, policy, and value functions were analysed in the context of education, alongside a comparative evaluation of RL algorithms. Among these, Proximal Policy Optimization (PPO) emerged as a robust, scalable, and sample-efficient candidate, particularly well-suited for noisy and partially observable environments such as online learning platforms. 
+
+A survey of existing RL applications in education revealed promising but fragmented advances. RL has been employed for curriculum sequencing, hint generation, feedback timing, and adaptive testing, often outperforming static and heuristic baselines. However, most implementations are constrained to simulated learners, narrow domains, or short-term metrics. A lack of longitudinal studies, equity-aware design, and theoretical integration continues to hinder broad adoption and pedagogical trust. 
+
+The review also examined how RL enhances Dynamic Difficulty Adjustment (DDA), transforming it from a rule-based logic into a self-improving, learner-centred system. RLbased DDA agents can learn optimal difficulty trajectories, adjusting questions based on inferred states and long-term learning goals. Moreover, by incorporating models of skill acquisition and motivational theory, these systems can maintain learners in states of productive struggle, critical for both performance and persistence. 
+
+In identifying key gaps in the literature, the review underscored the limited use of PPO in education, insufficient alignment with psychological theory, and a general lack of benchmarking and ethical safeguards. These limitations motivated the justification for the current research: to develop a PPO-based adaptive assessment system that explicitly incorporates Flow Theory and ZPD principles, validated through cognitively realistic simulations and rigorous performance comparisons. 
+
+The proposed system was conceptualized in a modular visual framework, featuring a state encoder, a PPO agent, an interpretable action space, a pedagogically aligned reward structure, and safeguards for transparency and fairness. Such a design not only advances the methodological rigor of educational RL systems but also anticipates the ethical and practical challenges of real-world deployment. 
+
+Ethical considerations were treated as integral throughout this review. Issues of bias, transparency, learner autonomy, privacy, and educator oversight were explored in detail, and design strategies were proposed to mitigate potential harms. These include opt-in participation, explainable decision logic, fairness-aware training, and human-in-the-loop control, ensuring that technological power is coupled with human responsibility.
+
+% From proposal's literature review (sections 6.1-6.5), merge without duplication.
+\subsection{Theoretical Framework}
+This study is grounded in several key theories. Csikszentmihalyi’s Flow Theory posits that optimal learning occurs when learners are engaged in tasks that match their skill level—neither too easy nor overwhelmingly difficult. This forms the basis of Dynamic Difficulty Adjustment (DDA) strategies embedded in the proposed system. Vygotsky’s Zone of Proximal Development (ZPD) further supports adaptive learning by emphasizing the need to scaffold learners within their capability range. From a computational perspective, the agent’s behaviour is modelled using a Markov Decision Process (MDP), where each interaction influences future outcomes. These theories collectively inform the reward design, action policies, and simulation logic in the reinforcement learning model \cite{vygotsky1978}.
+
+\subsection{Reinforcement Learning Fundamentals}
+Reinforcement Learning (RL), a branch of Artificial Intelligence (AI) and machine learning, focuses on training autonomous agents to make optimal decisions by interacting with their environment. Unlike supervised learning, which relies on labeled data, or unsupervised learning, which identifies patterns in unlabeled data, RL is driven by evaluative feedback. This feedback typically takes the form of rewards or penalties, enabling the agent to refine its behaviour through trial-and-error over time \cite{sutton2018}; \cite{mohamed2020}.
+
+A typical RL system is composed of several essential components. The agent represents the decision-making unit, while the environment provides the context in which the agent operates. The agent observes states that describe the environment’s condition and selects actions accordingly. Following each action, a reward signal provides feedback, guiding the agent’s learning process. The policy, which governs action selection, is iteratively refined to maximize cumulative rewards. Additionally, transition dynamics define the likelihood of moving from one state to another, and a discount factor determines the relative importance of immediate versus future rewards \cite{sutton2018} \cite{kurniawan2021} \cite{francoislavet2018}.
+
+At the core of the RL paradigm lies the balance between exploration and exploitation. Exploration allows the agent to try novel actions, potentially discovering better strategies, while exploitation involves selecting known, high-reward actions to maximize efficiency. Over time, the agent learns to manage this trade-off to optimize long-term outcomes \cite{sutton2018}; \cite{mandel2014}.
+
+Several RL algorithms support this learning process. Q-Learning estimates the value of specific state-action pairs without requiring a model of the environment. Policy Gradient Methods directly optimize the policy and are especially effective in continuous or complex action spaces. Deep Q-Networks (DQNs) integrate deep learning with Q-Learning to handle large, high-dimensional input spaces. Actor-Critic Methods combine the strengths of value-based and policy-based techniques, offering more stable convergence. Finally, Model-Based RL incorporates an internal representation of the environment to simulate future outcomes and improve planning \cite{sutton2018}; \cite{mandel2014}.
+
+Reinforcement learning is particularly well-suited to domains that require sequential and adaptive decision-making, such as education. The structure of RL aligns with the Markov Decision Process (MDP), allowing systems to evaluate not only immediate feedback but also future learning directions. This is highly relevant for educational tasks like question sequencing or adaptive curriculum design, where decisions must be responsive to a learner’s evolving knowledge. In cases where learner states are only partially observable, extensions such as Partially Observable Markov Decision Processes (POMDPs) offer additional flexibility and realism \cite{zawackirichter2019}; \cite{sutton2018}.
+
+\subsection{Adaptive Learning Technologies}
+Adaptive learning refers to instructional systems that tailor educational content and learning experiences to the individual needs of students. These systems dynamically adjust the pace, sequencing, and difficulty of instructional material in real-time, based on an ongoing analysis of the learner’s interactions, performance, and behaviour. The core objective is to enhance learning efficiency, personalize instruction, and maintain learner engagement by offering content that aligns with a student’s ability and progress \cite{popenici2017} \cite{siemens2021}.
+
+Modern adaptive platforms rely on sophisticated modelling techniques to estimate learner ability. These often include metrics such as accuracy of responses, response time, and self-reported confidence. More advanced systems incorporate probabilistic frameworks like Cognitive Diagnosis Models (CDMs) and Item Response Theory (IRT), which allow for fine-grained profiling of learners’ strengths and weaknesses. Some platforms also integrate affective computing, using engagement data to modulate content delivery for maximum impact \cite{lee2022} \cite{li2018}.
+
+One of the most prominent applications of adaptive learning is Computerized Adaptive Testing (CAT). In CAT, test items are selected dynamically based on the learner’s estimated proficiency level, aiming to maximize the accuracy of assessment using the fewest possible items. Traditionally, CAT systems employ statistical methods such as Maximum Fisher Information or the Kullback-Leibler Information Index to guide item selection. However, recent developments suggest that reinforcement learning provides a more robust and scalable alternative, especially in complex learning environments where static heuristics may fail to capture nuanced learning behaviours \cite{lee2022} \cite{zhang2020}.
+
+While rule-based adaptive systems offer simplicity and transparency, they are inherently constrained in their ability to model the complex, non-linear patterns often observed in real learner data. These systems typically rely on pre-defined decision trees or flowcharts, which can be brittle and difficult to scale. In contrast, reinforcement learning enables a data-driven approach, learning optimal instructional strategies directly from user interaction data. This allows for a more flexible, individualized response to learner variability and evolving performance trends \cite{lee2022}.
+
+Importantly, adaptive learning systems grounded in machine learning can support not just summative assessment but also formative learning. By continuously analysing student behaviour, these systems can identify learning gaps in real-time and recommend targeted interventions. This diagnostic capability represents a shift from reactive to proactive education, where personalization is not just about performance metrics but also about the learning journey itself.
+
+\subsection{Dynamic Difficulty Adjustment (DDA)}
+Dynamic Difficulty Adjustment (DDA) is a technique used in both gaming and educational systems to automatically calibrate the level of difficulty in real time, based on the user's ongoing performance. The primary goal is to maintain an optimal challenge point for users—ensuring tasks are neither too easy to become boring nor too hard to cause frustration. In education, DDA plays a crucial role in aligning task complexity with a learner’s evolving capabilities, thereby sustaining engagement and maximizing learning potential \cite{andrade2005} \cite{smith2012}.
+
+The conceptual foundation of DDA in education is supported by psychological and pedagogical theories such as Flow Theory Csikszentmihalyi and Vygotsky’s Zone of Proximal Development (ZPD). Flow Theory suggests that individuals reach optimal engagement when the difficulty of a task is perfectly balanced with their current skill level. Tasks that fall outside this balance are either too easy or too difficult—lead to disengagement. ZPD similarly emphasizes that learners benefit most when challenges are slightly beyond their current mastery, provided appropriate support or scaffolding is available. DDA systems operationalize these ideas by using real-time data to keep students within their optimal challenge zone \cite{smith2012} \cite{popenici2017}.
+
+In practical terms, DDA systems monitor performance indicators such as error rates, speed of response, and sometimes affective signals like hesitation or frustration. Based on these signals, the system dynamically adjusts content difficulty, often within the same learning session. These adjustments may be subtle to preserve immersion and avoid learner suspicion of artificial intervention, particularly in high-stakes assessment scenarios \cite{hunicke2005} \cite{smith2012}.
+
+Educational platforms such asSmartBook® andLearnSmart® incorporate DDA mechanisms that adapt question delivery based on student performance patterns. These platforms offer an individualized learning experience by continuously calibrating difficulty, pacing, and content type. In these contexts, DDA is not limited to simply switching between "easy" or "hard" questions, it involves selecting content that best aligns with the learner's current developmental stage and knowledge state.
+
+Reinforcement learning has further enhanced the sophistication of DDA systems. Unlike rule-based systems, RL models can learn optimal difficulty adjustment strategies by interacting with the environment and receiving feedback. This approach allows for the development of adaptive systems that can personalize instruction more precisely and evolve as the learner progresses. Research supports the use of RL to simulate tutoring behaviours and content adaptation policies that mimic expert educators \cite{lee2022} \cite{mohamed2020}.
+
+The strength of DDA lies not only in its ability to adjust content dynamically but also in its contribution to learner motivation and cognitive flow. By minimizing cognitive overload while avoiding redundancy, DDA serves as a bridge between engagement and performance, a core requirement for sustained and effective learning.
+
+\subsection{Applications of Reinforcement Learning in Education}
+Reinforcement Learning (RL) has emerged as a powerful framework for implementing adaptive strategies in educational systems. Its flexibility and responsiveness make it particularly suitable for applications that involve continuous learner interaction, such as personalized content delivery, question sequencing, feedback timing, curriculum planning, and student modelling. These capabilities allow RL-based systems to simulate expert-like tutoring behaviours that adapt in real time to the needs of individual learners \cite{zawackirichter2019}.
+
+In instructional sequencing, RL agents determine the optimal order in which learning activities or questions should be presented. This dynamic ordering supports mastery learning by guiding students through tasks that build on their current understanding. Notable implementations include intelligent tutoring systems such as Cordillera and RLATES, which adapt the sequence and difficulty of tasks to improve student engagement and knowledge retention. Studies show that these systems are especially beneficial for lower-performing students, who may need more individualized guidance and pacing than their peers \cite{zawackirichter2019}.
+
+RL is also widely used for question selection and scheduling, where it outperforms traditional heuristic-based methods. For example, the Masked Deep Q-Recommender system dynamically selects questions tailored to each learner's current proficiency, reducing redundancy and improving learning efficiency. These systems treat question scheduling as a sequential decision problem, enabling fine-tuned personalization even in complex learning environments \cite{lee2022}.
+
+Beyond task sequencing, RL has been employed to optimize feedback provision and hint timing. In this context, the RL agent decides when and how to provide hints, so that support is offered only when necessary, preserving learner autonomy while preventing cognitive overload. This selective scaffolding mimics expert teaching strategies and has shown positive results in domains such as algebra problem-solving and conceptual physics \cite{wang2021}.
+
+RL is also instrumental in student modelling, the process of inferring a learner’s current state of knowledge and predicting future performance. This modelling enables systems to anticipate misconceptions, adapt interventions, and simulate how learning might progress under different instructional policies. When combined with deep learning, RL can operate over rich student data, handling complex, non-linear patterns that traditional models might miss.
+
+In multi-agent settings, RL has been used to manage adaptive strategies across groups of students. These approaches are relevant for classroom-scale applications where collective behaviour, peer interaction, or group pacing need to be considered. While promising, multi-agent RL introduces new challenges in scalability and policy coordination, which remain active areas of research \cite{zawackirichter2019}.
+
+Despite its advantages, several challenges persist in applying RL to education. Chief among them is the need for large amounts of interaction data to train agents effectively. Additionally, there are concerns around interpretability, educators must understand why an RL agent recommends a specific action and generalizability, as models trained on one student population may not transfer well to others. There are also important ethical considerations, including fairness, transparency, and the protection of learner data \cite{mohamed2020}.
+
+The integration of RL into adaptive learning platforms holds considerable promise. It enables more responsive, data-driven personalization, improves learning outcomes through tailored interactions, and contributes to a shift toward intelligent systems that evolve with the learner.
+
+\subsection{Overview of RL Applications in Education}
+Educational environments involve sequential, context-sensitive decision-making, a natural match for RL. The core idea is to treat the learning process as a decision problem where instructional choices (actions) lead to changes in learner state (knowledge, motivation, engagement), and the system receives feedback (rewards) based on observed outcomes. 
+
+RL has been applied across the following key educational domains: 
+
+\begin{list}{}{\leftmargin=2em}
+\item \textbf{Adaptive Tutoring Systems:} 
+
+In intelligent tutoring systems (ITS), RL agents determine which concepts, exercises, or scaffolding techniques to present next. Systems like RLATES and Cordillera personalize instructional pathways using feedback from student performance, with the goal of maximizing retention and engagement over time. 
+
+\item \textbf{Curriculum Sequencing:}
+
+Rather than following a fixed sequence of topics, RL-based curriculum planners dynamically reorder content to optimize learning gains. \cite{chi2022} used a bandit-based RL agent to adapt topic selection in mathematics instruction, resulting in increased learner efficiency and retention. 
+
+\item \textbf{Personalized Feedback and Hint Timing:}
+
+RL agents also determine when and how to deliver feedback. For example, \cite{li2020} developed a hint generation system that used an Actor-Critic model to regulate hint timing in language learning tasks. Learners received targeted support only when it was likely to improve persistence and reduce errors. 
+
+\item \textbf{Adaptive Assessment Systems:}
+
+RL plays a critical role in generating assessments that adjust in real time to learner ability. Unlike traditional Computerized Adaptive Testing (CAT) that relies on fixed statistical models (e.g. IRT), RL systems learn from ongoing interaction. PPO-based agents, such as those developed by \cite{lee2022}, adjust question difficulty dynamically to maintain engagement and accurately estimate proficiency.
+
+\item \textbf{Educational Games and Motivation Management:}
+
+Game-based learning environments benefit from RL-driven difficulty modulation, reward structuring, and pace adjustment. \cite{mohamed2020} implemented RLbased DDA in educational games, enhancing user engagement and learning persistence. 
+
+\item \textbf{Multi-Agent Classrooms:}
+
+In classroom simulations or collaborative settings, RL agents have been used to manage interactions among multiple learners. \cite{castagna2025} employed multi-agent PPO agents in a simulated classroom, optimizing group-level strategies for engagement and collaboration.
+\end{list}
+
+\subsection{Methodological Approaches in RL-Education Research}
+RL research in education spans both controlled simulations and real-world implementations. Each method offers unique strengths and trade-off's: 
+
+\begin{list}{}{\leftmargin=2em}
+
+\item \textbf{Simulation-Based Studies:}
+
+These studies model learners using probabilistic or cognitive rules (e.g. logistic growth, Bayesian Knowledge Tracing). Synthetic data allows: 
+
+\begin{itemize}[leftmargin=4em]
+    \item Fine control over learner variability 
+    \item Large-scale experimentation
+    \item Iterative refinement of agent policies
+\end{itemize}
+
+Simulations also reduce ethical and logistical barriers, making them ideal for early-stage prototyping. However, their lack of ecological validity limits their predictive power in educational settings. 
+
+\item \textbf{Real-World Deployments:}
+
+Few but impactful studies have deployed RL systems with actual learners. \cite{nguyen2023} implemented an RL-powered assessment agent in a secondary school mathematics curriculum. Compared to rule-based systems, the RL approach improved learner retention and reduced assessment anxiety, highlighting the value of adaptivity in high-stakes educational settings. 
+
+\item \textbf{Evaluation Metrics:}
+
+Across studies, evaluation of these systems is typically based on one or more of the following dimensions: Cumulative Learning Gain, which measures the difference in learner proficiency before and after an intervention; Instructional Efficiency, assessed by the reduction in items or sessions required to achieve mastery; Engagement Indicators, including metrics such as task completion rates, time-on-task, and dropout probability; Satisfaction and Acceptance, often gauged through learner surveys and qualitative feedback; and Policy Stability and Generalizability, measured by performance across diverse learner types and subject areas. \cite{siddig2025} highlights a critical issue in RL-for-education research: the lack of standardized benchmarks. This absence of unified evaluation frameworks significantly impedes cross-study comparisons and restricts the generalizability of findings.
+\end{list}
+
+\subsection{Summary of Representative Studies}
+These studies highlight RL’s potential to improve instructional decision-making, learner outcomes, and engagement. Each algorithm, whether value-based (Q-learning), policy-based (PPO), or hybrid (Actor-Critic), was chosen to suit specific pedagogical goals and environmental constraints.
+
+\vspace{\baselineskip}
+
+\begin{table}[h]
+\centering
+\begin{tabular}{p{3.5cm} p{3cm} p{3.5cm} p{4.5cm}}
+\hline
+\textbf{Study} & \textbf{RL Method} & \textbf{Application Domain} & \textbf{Key Outcomes} \\
+\hline
+\cite{mandel2014} & POMDP & Adaptive Assessment & Increased accuracy and assessment efficiency \\
+\cite{chi2022} & Bandit & Curriculum Sequencing & Improved mathematical performance and content mastery \\
+\cite{lee2022} & PPO & Assessment & Maintained learner flow state and reduced anxiety \\
+\cite{li2020} & Actor--Critic & Hint Timing & Improved learner persistence and reduced error rates \\
+\cite{mohamed2020} & DQN & Educational Games & Increased engagement and improved cognitive balance \\
+\cite{nguyen2023} & Custom PPO & Real-world Assessment & Higher learner retention and overall satisfaction \\
+\hline
+\end{tabular}
+
+\caption{Summary of Reinforcement Learning Methods Applied in Educational Contexts}
+\label{tab:rl_methods_education}
+\end{table}
+
+\FloatBarrier
+
+\subsection{Methodological and Practical Limitations}
+Despite promising results, the application of Reinforcement Learning (RL) in education is still nascent and faces several key limitations. There is an overreliance on simulations, with many models validated only on synthetic learners, which risks misalignment with real-world behaviours. Another challenge stems from sparse and delayed rewards, as learning gains often manifest long after instructional actions, complicating both reward design and credit assignment. The cold start problem is also prominent, meaning RL systems require extensive interaction history to make effective decisions, which can lead to suboptimal early guidance for new learners. Furthermore, there is limited cross-domain generalizability, as most systems are trained on specific domains (e.g., algebra, grammar), making their transfer across diverse subjects or age groups difficult. Concerns also arise regarding algorithmic bias and equity gaps; without careful data curation, RL systems may inadvertently disadvantage lowperforming or underrepresented learners. Finally, transparency and trust remain significant hurdles, as many educators and learners perceive RL agents as "black boxes," thereby limiting their adoption in classrooms where interpretability and human oversight are essential. Additionally, most RL implementations in education focus heavily on performance optimization, often overlooking softer but increasingly recognized essential outcomes for holistic learning, such as curiosity, creativity, or metacognition.
+
+\subsection{Toward Human-Centric Educational RL}
+To address these challenges and fully realize Reinforcement Learning (RL)'s potential in education, future research should prioritize several key directions. One crucial area is developing Explainable and Trustworthy AI. This means RL agents ought to provide clear rationales for their decisions, through interpretable policy structures, informative visualizations, or intuitive teacher-facing dashboards. 
+
+Another vital direction is Equity-Aware Policy Design. Reward functions should explicitly account for the diverse needs of learners, aiming to minimize performance gaps and prevent overfitting to dominant learner profiles. Beyond this, fostering Teacher-AI Co-Design Models is essential. Instead of aiming to replace educators, RL agents should be designed as collaborative partners, allowing humans to modify, constrain, or even override policies when necessary. 
+
+Research also needs to focus on Longitudinal and Lifelong Learning Models. The goal here is to move beyond mere short-term test scores and instead optimize for long-term retention, deep conceptual understanding, and the development of learner autonomy over extended periods. Finally, developing Multi-Objective Reward Systems is critical. These systems should balance cognitive goals, such as concept mastery, with affective and behavioural objectives like preserving motivation and avoiding frustration. 
+
+Ultimately, adopting such human-centred frameworks will make RL systems more pedagogically aligned, ethically sound, and deployable in real classroom environments.
+
+\section{Identified Gaps and Justification for Current Study}
+The application of Reinforcement Learning (RL) in education has shown tremendous promise, particularly in areas such as adaptive assessment, curriculum sequencing, and feedback optimization. However, despite these advancements, a critical review of the literature reveals that current RL implementations are far from mature or universally applicable. Several recurring gaps in methodology, design, and theoretical integration constrain the broader deployment and effectiveness of RL-based educational systems. This section synthesizes these limitations and provides a structured rationale for the proposed research project: the development and evaluation of a Proximal Policy Optimization (PPO)based Dynamic Difficulty Adjustment (DDA) agent for simulated adaptive assessments.
+
+\subsection{Key Gaps in the Literature}
+\textbf{Limited Integration of Educational Psychology Theories into RL Systems} 
+
+Many existing RL-based systems are grounded in technical optimization rather than educational theory. While algorithms may adjust difficulty levels or feedback timing based on performance, few models explicitly embed psychological constructs such as Flow Theory or Zone of Proximal Development (ZPD). This results in systems that may be computationally efficient but pedagogically misaligned. The absence of these theories undermines learner motivation, fails to address affective states, and limits instructional quality. 
+
+\textbf{Underutilization of PPO in Educational Contexts} 
+
+Among RL algorithms, Proximal Policy Optimization (PPO) stands out for its stability, sample efficiency, and robustness in stochastic and high-variance environments. These features are highly desirable in educational settings, where learner behaviour is dynamic, noisy, and difficult to predict. Despite its advantages and growing popularity in robotics and game AI, PPO remains underexplored in education, with most studies defaulting to simpler algorithms like Q-Learning or DQNs or relying on bandit models that lack temporal reasoning. 
+
+\textbf{Overdependence on Rule-Based and Statistical Models in Adaptive Assessments} 
+
+Many adaptive assessment platforms still rely on Item Response Theory (IRT) or rule-based heuristics. While statistically sound, these models assume static learner traits, fail to account for evolving proficiency, and offer limited personalization. Their fixed logic cannot adapt to complex, non-linear learning trajectories, nor can they incorporate engagement data, affective responses, or longitudinal trends. RL, especially when combined with simulation-based environments, offers a more flexible and responsive alternative. 
+
+\textbf{Simulation-Only Validation with Weak Generalization Guarantees} 
+
+Although simulation-based RL studies are valuable for prototyping, many are evaluated solely on artificial learners modelled with idealized learning curves. These models often oversimplify real-world variability by ignoring factors such as cognitive fatigue, motivational fluctuations, or domain-specific misconceptions. As a result, agent policies optimized in simulation frequently lack ecological validity and perform poorly when translated into actual learning environments. 
+
+\textbf{Inadequate modelling of Learning Curves in RL Rewards} 
+
+Most RL-based educational systems use immediate correctness or engagement metrics as proxies for learning success. Few integrate cognitive learning models (e.g. exponential forgetting curves, spaced repetition, or transfer functions) directly into the reward function. This omission results in systems that may reward short-term success (e.g. right answers) without optimizing for deeper understanding or long-term retention. 
+
+\textbf{Lack of Benchmarking and Evaluation Standards} 
+
+There is a notable absence of shared benchmarks, datasets, or standardized performance metrics in the educational RL literature. As \cite{siddig2025} and others have noted, this fragmentation makes it difficult to compare results across studies, replicate successful models, or measure progress over time. It also contributes to the lack of reproducibility, one of the major criticisms of AI applications in education more broadly. 
+
+\textbf{Limited Consideration of Equity, Transparency, and Ethical Design} 
+
+RL-based adaptivity systems risk reinforcing existing educational inequalities if fairness and bias mitigation are not explicitly addressed. For example, if agents learn from biased training data or are rewarded for maximizing efficiency alone, they may systematically disadvantage underperforming or marginalized learners. Moreover, the black-box nature of RL policies can limit interpretability, which is essential for adoption in educational institutions.
+
+\subsection{Justification for the Current Study}
+The proposed research project aims to directly address these identified gaps through a structured and theoretically grounded exploration of RL for adaptive assessments. Specifically, it focuses on developing a PPO-based DDA agent in a simulated classroom environment. The justification rests on the following interlocking rationales: 
+
+\textbf{Theoretical Alignment with Flow Theory and ZPD} 
+
+Unlike traditional assessments or reward-maximizing RL systems, Flow Theory and Zone of Proximal Development (ZPD) will explicitly inform the proposed PPO agent. The reward function will be shaped to penalize both under-challenge (boredom) and over-challenge (frustration), thereby sustaining cognitive engagement. Task difficulty will be calibrated to target a learner’s "proximal" zone, where support is needed but growth is maximized. 
+
+\textbf{Deployment of PPO as a Stabilized, Scalable RL Model for Assessment} 
+
+By using PPO, this study introduces a more stable and sample-efficient algorithm to the field of educational AI. PPO’s clipped objective function helps prevent catastrophic policy updates and ensures smoother learning in high-noise, high-variance environments, typical of learner modelling. Its ability to scale across diverse tasks and domains supports future generalization and transfer. 
+
+\textbf{Grounding in Simulation with Pedagogical Fidelity} 
+
+While the initial implementation will use synthetic learners, these will be modelled on cognitively plausible learning curves informed by learning science literature. This includes probabilistic correct-answer modelling, skill growth over time, and noise parameters for slip and guess behaviours (e.g. IRT-based). As such, the simulation will provide a realistically noisy testbed for refining agent behaviour prior to human deployment. 
+
+\textbf{Comparative Evaluation Against Static and Heuristic Baselines} 
+
+To validate the effectiveness of the PPO agent, it will be benchmarked against two standard alternatives: a Static Difficulty Model, which presents same-level questions throughout the session, and a Rule-Based Adaptive Model, where difficulty adjusts after a fixed number of correct or incorrect responses. These comparisons are designed to assess whether Reinforcement Learning (RL)-based adaptivity provides measurable gains in learning, efficiency, and engagement when compared to common models currently in use. 
+
+\textbf{Ethical and Practical Design for Future Deployment} 
+
+Although the study is simulation-based, the architecture will be designed with ethical foresight. This includes the potential for \textit{human-in-the-loop control}, allowing for human oversight and intervention. Additionally, it will feature \textit{optional interpretability modules}, such as reward explanation graphs, to provide insights into the system's decision-making process. A \textit{clear separation between instructional strategy and student data layers} will also be maintained to support privacy-by-design principles. These deliberate decisions ensure that the proposed system is not only algorithmically advanced but also deployment-ready and aligned with the ethical responsibilities inherent in educational technology.
+
+\subsection{Research Contribution}
+The proposed study aims to advance the field in several key areas. Firstly, it seeks to contribute to Algorithmic Innovation by demonstrating Proximal Policy Optimization (PPO) as a viable and superior alternative to existing Dynamic Difficulty Adjustment (DDA) mechanisms in adaptive testing. Secondly, it provides Theoretical Grounding by embedding principles from educational psychology directly into Reinforcement Learning (RL) design, specifically by shaping reward functions with cognitive and motivational principles. Thirdly, the study emphasizes Methodological Rigor, offering a reproducible evaluation framework that encompasses simulation fidelity, robust benchmarking, and rigorous statistical validation. Fourthly, it addresses Ethical Responsibility by initiating fairness-aware, explainable, and privacy-conscious design practices within educational RL systems. Finally, it targets Practical Utility by creating a blueprint for the deployment of such systems in real-world adaptive learning platforms. By directly addressing current limitations in scope, theory, and methodology, this study holds the potential to bridge the gap between computational efficiency and educational value, thereby helping RL become a more trusted and effective tool in the future of personalized learning.
+
+\section{Ethical Considerations in Adaptive Educational Systems}
+As reinforcement learning (RL) and other intelligent technologies become more embedded in education, ethical concerns must be treated as foundational rather than peripheral. Adaptive systems, particularly those driven by opaque or autonomous decision-making mechanisms, are not value-neutral. They actively shape learner experiences, influence performance outcomes, and can, intentionally or unintentionally, perpetuate bias, inequity, or disempowerment. This section explores the core ethical issues surrounding RL-based adaptive assessment systems and outlines design principles intended to safeguard learner well-being, equity, and trust.
+
+\subsection{Fairness and Bias Mitigation}
+One of the most critical concerns in educational AI is algorithmic fairness. If a Reinforcement Learning (RL)-based assessment agent is trained on biased data—for example, datasets that overrepresent high-performing learners or particular socioeconomic groups—it may learn policies that perform well on average but fail to adequately accommodate disadvantaged populations. In extreme cases, such systems have the potential to reinforce existing inequalities by over-challenging low-performing students, which can lead to increased cognitive overload and discouragement. Conversely, they might under-challenge highperforming students, resulting in stagnation or boredom. Furthermore, these systems could inadvertently tailor strategies in ways that privilege certain cultural, linguistic, or cognitive styles.
+
+To address these concerns, the proposed study incorporates fairness-aware evaluation criteria. For instance, simulated learners will be stratified by proficiency and response variability to ensure that the RL agent performs equitably across diverse profiles. In future real-world implementations, fairness audits could be integrated to flag disparate outcomes, while reward functions can be explicitly designed to value improvement and engagement across all learner groups, rather than solely focusing on absolute performance.
+
+\subsection{Transparency and Interpretability}
+Reinforcement learning (RL) agents, particularly those based on deep policy networks like Proximal Policy Optimization (PPO), are frequently criticized for their "black-box" nature. In an educational context, this opacity presents a significant problem. Teachers, administrators, students, and parents require an understanding of how decisions are made, whether it pertains to the selection of a specific question, an increase in difficulty, or the methodology used to measure success.
+
+To foster essential trust, such systems must support explainability at multiple levels. This includes learner-facing explanations, which might convey messages like, "This question was chosen to help you build on your recent success in medium-level tasks." It also encompasses teacher-facing dashboards that summarize policy trends and highlight potential concerns. Furthermore, developer-level visualizations, such as reward trajectory plots and policy stability graphs, are crucial for auditing and debugging the system. While achieving full interpretability in deep RL remains an ongoing research challenge, this project takes a significant step toward transparency by meticulously logging agent decisions and simulating justification outputs, thereby establishing a foundational basis for future explainable-RL modules.
+
+\subsection{Autonomy and Informed Consent}
+Educational technologies should aim to augment, rather than replace, human agency, a principle that applies equally to both learners and educators. If students remain unaware of how their progress is being tracked or influenced, or if they perceive an invisible system as manipulative, the learning experience can become disempowering. Similarly, educators may understandably resist systems that override their pedagogical intent or operate beyond their control.
+
+To promote autonomy for all users, several key safeguards are crucial. These include providing opt-in mechanisms and clear disclosures about system functionality, ensuring transparency from the outset. Systems should be designed to recommend rather than enforce instructional decisions, giving learners and educators the final say. Critically, teachers must be empowered to override or modify agent behaviour when needed, allowing them to integrate their professional judgment. Furthermore, incorporating learner preferences into state representations or as secondary reward criteria (e.g., preferred pacing or content format) can enhance personalization and a sense of ownership. These deliberate design choices are essential for creating an adaptive system that learners perceive as a supportive partner rather than a stern examiner, and that educators view as a valuable tool rather than a threat.
+
+\subsection{Data Privacy and Security}
+Reinforcement Learning (RL) systems necessitate substantial amounts of learner interaction data to function effectively, encompassing performance metrics, response times, behavioural patterns, and potentially even biometric or emotional indicators. This extensive data collection inherently creates significant privacy concerns, particularly when the data involves minors or is stored across third-party platforms.
+
+To address these critical concerns, the proposed framework will incorporate privacy-bydesign principles. This includes data anonymization and pseudonymization by default, ensuring that personal identities are protected from the outset. Additionally, secure data encryption at rest and in transit will be implemented to safeguard information during storage and transfer. Role-based access control will be utilized to restrict sensitive information only to authorized personnel, further enhancing data security. Finally, a modular system design will allow for local (on-device) training or inference where technically feasible, reducing the need for data transfer to central servers. In any future human deployment, all data collection must comply with relevant regional legal frameworks, such as GDPR (EU) or POPIA (South Africa), and robust informed consent procedures must be diligently implemented to ensure ethical data handling.
+
+\subsection{Accountability and Human Oversight}
+While Reinforcement Learning (RL) agents are powerful decision-makers, they should not operate unchecked. Accountability mechanisms are essential to ensure that any instructional errors, biases, or system failures can be identified and addressed effectively. Crucially, human educators must remain the ultimate arbiters of pedagogy and assessment.
+
+To support this necessary oversight, the system should meticulously log and timestamp every decision made by the agent, along with its internal state and the corresponding reward signal. This detailed record allows educators to review decision histories, flag problematic behaviour, and adjust system settings as needed. Furthermore, a "human-in-the-loop" design is prioritized, enabling teachers to intervene in the learning process at any time, including pausing the system, altering difficulty parameters, or even disabling automation entirely.
+
+These practices are designed to foster co-agency, where both the human and the AI system contribute to the learner’s progress in an accountable and complementary fashion. By incorporating these principles from the design phase onward, this research ensures that the adaptive system is not only technically capable and pedagogically sound but also socially responsible and ethically deployable. As AI continues to influence the classroom, such foresight is not optional; it is absolutely essential.
+
+\section{Visual Framework and Conceptual Model}
+To integrate the psychological, algorithmic, and instructional design principles discussed throughout this review, we present a conceptual model of a Proximal Policy Optimization (PPO)-driven Dynamic Difficulty Adjustment (DDA) agent for adaptive assessment. This model embodies a modular, interpretable system architecture that maps real-time learner behaviour to personalized assessment strategies, grounded in reinforcement learning.
+
+The system is designed to operate within a simulation-based educational environment but is extensible to real-world deployment. It supports both experimentation and eventual integration with learning platforms or intelligent tutoring systems.
+
+\subsection{Conceptual Flow of the PPO-Based DDA System}
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.8\textwidth]{ppo_flow_diagram} % TODO: Replace with actual image or description if available
+\caption{Conceptual Flow of the PPO-Based DDA System}
+\label{fig:ppo_flow}
+\end{figure}
+
+\subsection{System Components Explained}
+\subsubsection{Learner Profile and Interaction History}
+This layer is responsible for capturing the learner's real-time and historical data. The inputs to this layer may include various metrics such as proficiency estimates (e.g., inferred skill levels), response time trends, error rates across different difficulty levels, and engagement markers (e.g., indicators of dropout risk). Additionally, session metadata, such as the number of questions attempted or a proxy for fatigue, can be incorporated. In a real-world deployment scenario, this module could be further augmented with demographic data, prior academic performance records, or even learner preferences (e.g., preferred pacing style or content format), provided that such additions strictly adhere to relevant ethical constraints and privacy regulations. 
+
+\subsubsection{State Encoder}
+The state encoder transforms raw learner data into a structured input vector for the RL agent. It may include both handcrafted features and learned embeddings. The state vector represents a latent representation of the learner's current cognitive and affective state. 
+
+This component also enables partial observability modelling, aligning with the Partially Observable Markov Decision Process (POMDP) framework. The true learner state (e.g. motivation, understanding) is inferred from observed data streams. 
+
+\subsubsection{PPO Agent}
+At the heart of the model is a Proximal Policy Optimization (PPO) agent. The architecture of this PPO agent primarily includes two key components: a Policy Network and a Value Network. The Policy Network is responsible for outputting probabilities for choosing each available question difficulty level, which serves as the action in this context. Concurrently, the Value Network estimates the expected cumulative reward from the current state, providing a crucial baseline for evaluating actions. The policy itself is updated after each episode using PPO's distinctive clipped surrogate objective. This mechanism is vital for ensuring stable learning by preventing overly aggressive policy shifts, thereby maintaining a balance between effective exploration and stable optimization. 
+
+\subsubsection{Action Selection: Difficulty Level}
+Based on the current learner state, the Proximal Policy Optimization (PPO) agent selects one of three discrete difficulty levels for the next assessment item. These levels are categorized as: "Easy," intended for consolidation or a motivational boost; "Medium," representing a comfortable zone for the learner; and "Hard," designed to provide a stretch challenge. While the current action space is limited to these three difficulty levels, it holds the potential for future expansion to include additional instructional decisions such as content domain selection, offering scaffolding options, or even timing hints. 
+
+\subsubsection{Learner Response}
+Once the question is presented, the system meticulously collects the learner’s response and associated metadata. This includes whether the answer was correct, the time taken to respond, the number of attempts made, and various behavioural indicators such as hesitation or rapid guessing. This comprehensive information is then fed into the reward function, which uses these inputs to calculate feedback for the agent. Simultaneously, this data helps to refine the agent’s belief about the learner’s evolving state, allowing the system to update its understanding of the learner's proficiency and current cognitive context for subsequent decision-making. 
+
+\subsubsection{Reward Function}
+The reward signal is carefully designed to integrate both cognitive and motivational considerations. A positive reward of +1 is granted for a correct response when the question is at an appropriate challenge level, specifically aligning with the learner's Zone of Proximal Development (ZPD). Conversely, a penalty of $-1$ is applied for repeated failure that is attributed to excessive difficulty, aiming to prevent learner frustration. Additionally, a bonus of +0.5 is provided for successful transitions from one defficulty band to another, acknowledging sustained progress. Further bonus or penalty modifiers are incorporated based on engagement proxies, such as a decreasing time-on-task or quick dropouts, to reflect the learner's motivational state. The overarching goal of this reward structure is to train the agent to maintain learners within the flow zone, thereby optimizing for long-term engagement and deep concept mastery, rather than solely focusing on immediate correctness. 
+
+\subsubsection{PPO Policy Update Loop}
+At the end of each simulated episode (or a fixed number of interactions), the PPO agent updates its policy using gradient ascent on the clipped objective function. This loop continues over many episodes, with the policy improving over time through simulated or real learner interactions.
+
+\subsection{Modularity and Future Extensibility}
+The system is designed with modularity in mind, a crucial characteristic that allows each component to be extended or replaced independently. This flexibility offers significant advantages; for example, the reward function can be reweighted or even made adaptive through techniques like curriculum learning. Similarly, the action space can be expanded in future iterations to include more nuanced instructional decisions, such as offering scaffolding strategies, varying hint types, or adjusting the learning modality (e.g., visual, audio, or text). Furthermore, the state encoder, responsible for interpreting learner data, can be upgraded with advanced architectures like transformers, LSTMs, or attention mechanisms to enhance temporal modelling of learner behaviour. This inherent modularity not only supports rigorous experimentation but also facilitates future real-world integration into existing Learning Management Systems (LMS) or Intelligent Tutoring Systems (ITS).
+
+\subsection{Conceptual Model Objectives}
+The overarching goals of this system are multifaceted, aiming for Personalization by tailoring the challenge level in real-time based on learner response patterns and inferred states. It also strives for high Engagement, maintaining learner motivation by carefully avoiding conditions of either underor over-challenging. Furthermore, the system prioritizes Efficiency, seeking to reduce the number of questions needed to reliably estimate learner proficiency. To ensure broad applicability, Scalability is a key objective, with the model design supporting expansion to multiple domains and learner types. Finally, Explainability and Ethics are paramount, requiring the system to maintain transparency, fairness, and control at each decision point. This conceptual model forms the core engine of the proposed research experiment, directly guiding the simulation, agent training, selection of evaluation metrics, and subsequent analysis. It represents a synthesis of established learning theory, advanced Reinforcement Learning methodology, and proactive ethical design, thereby aligning with the broader vision of data-driven, student-centred education.
+
+\section{Conclusion}
+This literature review has explored the intersection of educational theory, machine learning, and adaptive assessment, with a particular focus on the use of Reinforcement Learning (RL) to implement Dynamic Difficulty Adjustment (DDA) systems. As the demand for personalized and scalable learning experiences continues to rise, RL offers a powerful, data driven approach to tailoring assessments in real time. However, as the review has demonstrated, current applications remain limited in both theoretical grounding and practical sophistication. 
+
+The review began by laying a strong theoretical foundation, examining how Flow Theory and the Zone of Proximal Development (ZPD) can inform intelligent assessment strategies. These psychological models emphasize the importance of maintaining an optimal challenge zone, tasks must be neither too difficult nor too easy. When embedded into RL frameworks, these theories provide meaningful pedagogical direction for designing reward functions and shaping learner state representations. 
+
+At the algorithmic level, the review outlined how Markov Decision Processes (MDPs) and their partially observable counterparts (POMDPs) provide the mathematical backbone for sequential decision-making in uncertain educational environments. Here, the agent’s goal is not simply to maximize correctness, but to optimize cumulative learning outcomes over time. This conceptual shift, from static scoring to dynamic adaptation, underpins the promise of RL in personalized education. 
+
+The review then delved into the core mechanics of RL, distinguishing it from supervised and unsupervised learning. Key components such as state, action, reward, policy, and value functions were analysed in the context of education, alongside a comparative evaluation of RL algorithms. Among these, Proximal Policy Optimization (PPO) emerged as a robust, scalable, and sample-efficient candidate, particularly well-suited for noisy and partially observable environments such as online learning platforms. 
+
+A survey of existing RL applications in education revealed promising but fragmented advances. RL has been employed for curriculum sequencing, hint generation, feedback timing, and adaptive testing, often outperforming static and heuristic baselines. However, most implementations are constrained to simulated learners, narrow domains, or short-term metrics. A lack of longitudinal studies, equity-aware design, and theoretical integration continues to hinder broad adoption and pedagogical trust. 
+
+The review also examined how RL enhances Dynamic Difficulty Adjustment (DDA), transforming it from a rule-based logic into a self-improving, learner-centred system. RL-based DDA agents can learn optimal difficulty trajectories, adjusting questions based on inferred states and long-term learning goals. Moreover, by incorporating models of skill acquisition and motivational theory, these systems can maintain learners in states of productive struggle, critical for both performance and persistence. 
+
+In identifying key gaps in the literature, the review underscored the limited use of PPO in education, insufficient alignment with psychological theory, and a general lack of benchmarking and ethical safeguards. These limitations motivated the justification for the current research: to develop a PPO-based adaptive assessment system that explicitly incorporates Flow Theory and ZPD principles, validated through cognitively realistic simulations and rigorous performance comparisons. 
+
+The proposed system was conceptualized in a modular visual framework, featuring a state encoder, a PPO agent, an interpretable action space, a pedagogically aligned reward structure, and safeguards for transparency and fairness. Such a design not only advances the methodological rigor of educational RL systems but also anticipates the ethical and practical challenges of real-world deployment. 
+
+Ethical considerations were treated as integral throughout this review. Issues of bias, transparency, learner autonomy, privacy, and educator oversight were explored in detail, and design strategies were proposed to mitigate potential harms. These include opt-in participation, explainable decision logic, fairness-aware training, and human-in-the-loop control, ensuring that technological power is coupled with human responsibility.
+
+\chapter{Research Methodology}
+
+\section{Introduction to the Methodology}
+This chapter outlines the methodological framework for the proposed research on Reinforcement Learning (RL) for adaptive assessment in education, specifically focusing on Proximal Policy Optimization (PPO) for Dynamic Difficulty Adjustment (DDA). As articulated in the literature review (De Wet, 2025), the research problem centres on the limitations of static or rule-based adaptive systems, which fail to dynamically align instructional content with individual learner states, leading to suboptimal engagement and mastery. The primary research objectives are: (1) to design and simulate a PPO-driven DDA system grounded in Flow Theory and the Zone of Proximal Development (ZPD); (2) to evaluate its efficacy in optimizing question difficulty for personalized learning; and (3) to compare it against heuristic baselines for scalability and ethical deployment. 
+ 
+The chosen methodology adopts a quantitative, simulation-based experimental design, which aligns directly with these objectives by enabling controlled testing of RL algorithms in a virtual educational environment. This approach allows for iterative policy optimization without real-world ethical risks, such as exposing learners to untested systems \cite{greenblatt2021}. 
+ 
+The gap analysis from the literature review underscores the imperative for targeted investigations into the integration of advanced reinforcement learning algorithms, such as Proximal Policy Optimization (PPO), with foundational pedagogical theories including Flow Theory and the Zone of Proximal Development (ZPD) (De Wet, 2025). This simulation-based methodology directly mitigates this lacuna by establishing a controlled experimental milieu conducive to validating the theoretical synthesis, thereby facilitating empirical scrutiny of PPO's applicability in educational contexts (De Wet, 2025). 
+ 
+Simulation is particularly apt for Information Technology (IT) research in RL, as it facilitates high-fidelity modelling of learner interactions while generating large datasets for analysis \cite{sutton2018}. By simulating learner responses based on pedagogical models (e.g., Bayesian Knowledge Tracing), the design ensures empirical validation of theoretical foundations like Markov Decision Processes (MDPs) and Partially Observable MDPs (POMDPs), as discussed in the literature review. This methodology not only addresses the identified gaps, such as underutilization of PPO in education, but also provides a scalable pathway to future real-world applications.
+
+\section{Research Paradigm and Justification}
+The research is situated within a positivist paradigm, which posits that knowledge is derived from observable, measurable phenomena through empirical testing and logical deduction \cite{saunders2019}. Positivism is justified here due to the project's emphasis on quantifiable outcomes, such as reward convergence in RL agents and learner performance metrics, which can be objectively evaluated in controlled simulations. In IT and educational technology research, positivism dominates RL studies because it supports hypothesis testing (e.g., "PPO outperforms rule-based DDA in maintaining ZPD") through data-driven methods, minimizing subjective bias \cite{creswell2018}. 
+ 
+This paradigm contrasts with interpretivism, which focuses on subjective experiences and is less suitable for algorithmic optimization tasks like PPO training, where reproducibility and generalizability are paramount \cite{bell2019}. Justification draws from literature on RL in education: for instance, \cite{doroudi2019} employed positivism in simulating adaptive tutoring, arguing it enables precise measurement of variables like state transitions in MDPs. Similarly, \cite{rafferty2016} justified positivist approaches for POMDP-based assessments, as they facilitate statistical validation of learner models. By adopting positivism, this study ensures methodological rigor, aligning with the objective of bridging pedagogical theory (e.g., Flow Theory) with computational innovation, while avoiding the ontological complexities of constructivist paradigms in simulation-heavy IT research.
+
+\section{Research Design}
+The research employs a quantitative experimental design, executed through computer simulations to model and evaluate the PPO-based DDA system. This design is appropriate for testing RL algorithms in educational contexts, as it allows for controlled manipulation of variables (e.g., difficulty levels as actions) and repeated trials to assess policy optimization \cite{koedinger2013}. The design is structured around an MDP/POMDP framework: the state represents learner proficiency (inferred from simulated responses), actions involve selecting question difficulties, and rewards are based on alignment with ZPD and Flow states.
+
+Simulations will use synthetic environments mimicking real educational scenarios, such as quiz-based assessments in STEM subjects. This approach is justified by its prevalence in RL research, where real-world data collection poses challenges like privacy concerns \cite{mandel2014}. For example, the design includes multiple experimental conditions: (1) PPO agent training; (2) baseline comparisons (e.g., rule-based IRT models), and (3) sensitivity analyses for hyperparameters like discount factor ($\gamma$). Literature supports this: \cite{savoie2021} used similar experimental simulations to validate RL for flow-aligned learning, demonstrating improved mastery over static methods. The design's appropriateness lies in its alignment with objectives, enabling hypothesis testing on PPO's stability and scalability while ensuring ethical simulation prior to potential deployment \cite{vanlehn2011}.
+
+While the primary design relies on simulated learners, external validity is addressed by aligning simulation parameters with real-world educational datasets such as the ASSISTments platform \cite{heffernan2014}. This ensures that proficiency trajectories and response probabilities are not arbitrary but instead grounded in analytically observed learning patterns. Although simulation cannot fully replicate the complexity of real classroom dynamics, it provides a scalable and ethically safe platform for controlled experimentation. Findings from this study are therefore designed to generalise as design principles and performance benchmarks, which can later inform pilot studies with actual learners.
+
+\section{Data Collection Methods}
+Data will be collected through simulation-based generation, drawing from synthetic learner models to create datasets of interactions. Primary data sources include: (1) simulated learner profiles, generated using probabilistic models like Bayesian Knowledge Tracing (BKT) to represent varying proficiency levels \cite{corbett1994}; and (2) RL interaction logs, capturing states, actions, rewards, and transitions during PPO training episodes.
+
+Data gathering will occur via Python-based simulations using libraries such as OpenAI Gym for custom MDP environments and Stable Baselines3 for PPO implementation \cite{raffin2021}.
+
+\section{Data Analysis Methods}
+% TODO: Complete this section based on remaining pages. Likely includes descriptive statistics, inferential tests (t-tests, ANOVA for hypotheses), visualization of learning curves, reward convergence, etc.
+
+\section{Validity, Reliability, and Trustworthiness}
+% TODO: Complete this section. Discuss internal/external validity in simulations, reliability of models, trustworthiness via reproducibility.
+
+\section{Conclusion}
+% TODO: Summarize methodology.
+
+\chapter{System Design and Implementation}
+% TODO: This chapter is missing from supplied documents. Work needed: Describe the actual implementation of the PPO-based DDA system. Guideline: Use Python code snippets (e.g., via listings package); detail setup with OpenAI Gym and Stable Baselines3; include architecture diagrams; explain state/action/reward; add baseline code; provide GitHub link for reproducibility. Aim for 10-15 pages with pseudocode and explanations. Run simulations to generate preliminary data if not done.
+
+\section{Overview of the PPO-Based DDA System}
+% Placeholder.
+
+\section{Simulation Environment Setup}
+
+\section{Key Components and Architecture}
+
+\subsection{State Representation (Learner Proficiency modelling)}
+
+\subsection{Action Space (Difficulty Adjustment)}
+
+\subsection{Reward Function Design (ZPD and Flow Alignment)}
+
+\subsection{PPO Algorithm Implementation}
+
+\section{Baseline Models for Comparison}
+
+\section{Code and Reproducibility Details}
+
+\chapter{Results and Evaluation}
+% TODO: This chapter is missing. Work needed: Present simulation results. Guideline: Run experiments (10,000 episodes); include descriptive stats, inferential tests (SciPy); visualizations (Matplotlib exports as figures); comparative tables/graphs; sensitivity analysis. Aim for 10-15 pages with evidence supporting hypotheses.
+
+\section{Experimental Setup Recap}
+
+\section{Descriptive Results}
+
+\section{Inferential Statistics}
+
+\section{Comparative Analysis}
+
+\section{Sensitivity and Robustness Checks}
+
+\section{Visualizations}
+
+\chapter{Discussion}
+% TODO: This chapter is missing (partial in proposal's expected outcomes/ethical/conclusion). Work needed: Interpret results linking to objectives/gaps; discuss implications, limitations, ethics; suggest future work. Guideline: Build on proposal's sections 8-10; reference results from Ch. 5; 8-12 pages.
+
+\section{Interpretation of Findings}
+
+\section{Implications for Educational Technology}
+
+\section{Limitations and Threats to Validity}
+
+\section{Ethical Reflections}
+
+\section{Future Work}
+
+\chapter{Conclusion}
+% TODO: Expand from proposal's conclusion. Work needed: Summarize contributions, objectives achievement, impact. Guideline: 3-5 pages; tie back to introduction.
+
+This research proposes a novel application of reinforcement learning for dynamic difficulty adjustment in digital assessments. Unlike traditional static assessments, which fail to account for learner variability, the proposed RL agent continuously adapts question difficulty in response to performance signals. The goal is to align task challenge with each learner’s cognitive readiness, thereby optimizing concept acquisition and maintaining engagement.
+
+Through a simulation-based approach, this study designs and tests a personalized assessment agent under controlled conditions. It compares the RL agent’s effectiveness against baseline systems, using learning gain, efficiency, and engagement stability as performance metrics. By doing so, the research aims to generate actionable insights into the role of AI in adaptive education.
+
+If successful, the study could contribute a scalable and intelligent framework for personalized assessment, supporting broader goals of equity, engagement, and improved learning outcomes in digital learning environments.
+
+\section{Summary of Contributions}
+
+\section{Achievement of Objectives}
+
+\section{Broader Impact and Recommendations}
+
+\backmatter
+
+% References
+% \bibliographystyle{ieeetr}
+\bibliography{references} % Assuming a references.bib file; consolidate all references from proposal, lit review, methodology.
+
+% Appendices
+\appendix
+\chapter{Full Code Listings}
+% TODO: Insert code. Guideline: Use \lstinputlisting{file.py} or inline.
+
+\chapter{Detailed Simulation Data}
+% TODO: Add raw data/tables.
+
+\chapter{Statistical Output Tables}
+% TODO: Add ANOVA/t-test outputs.
+
+\chapter{Ethical Approval (if applicable)}
+% TODO: If real data used later, add forms.
+
+\end{document}
