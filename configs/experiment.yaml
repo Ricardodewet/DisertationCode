@@ -1,0 +1,15 @@
+# Default configuration for the adaptive assessment experiment
+
+environment:
+  max_steps: 20  # number of questions per episode
+
+training:
+  episodes: 100  # number of episodes per run (reduced for quicker experiments)
+  seeds: [0, 1, 2]  # random seeds for reproducibility
+  learning_rate: 0.01
+  gamma: 0.99
+  lam: 0.95
+  eps_clip: 0.2
+  value_coef: 0.5
+  epochs: 3
+  batch_size: 64

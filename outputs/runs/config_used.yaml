@@ -1,0 +1,15 @@
+environment:
+  max_steps: 20
+training:
+  batch_size: 64
+  episodes: 100
+  epochs: 3
+  eps_clip: 0.2
+  gamma: 0.99
+  lam: 0.95
+  learning_rate: 0.01
+  seeds:
+  - 0
+  - 1
+  - 2
+  value_coef: 0.5
